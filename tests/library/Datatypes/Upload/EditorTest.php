@@ -26,15 +26,6 @@
  */
 
 namespace Datatypes\Upload;
-
-use Gc\Datatype\Model as DatatypeModel;
-use Gc\Document\Model as DocumentModel;
-use Gc\DocumentType\Model as DocumentTypeModel;
-use Gc\Layout\Model as LayoutModel;
-use Gc\Property\Model as PropertyModel;
-use Gc\User\Model as UserModel;
-use Gc\Tab\Model as TabModel;
-use Gc\View\Model as ViewModel;
 use Gc\Media\File;
 
 /**
@@ -54,55 +45,6 @@ class EditorTest extends \PHPUnit_Framework_TestCase
     protected $object;
 
     /**
-     * @var DatatypeModel
-     *
-     * @return void
-     */
-    protected $datatype;
-
-    /**
-     * @var PropertyModel
-     *
-     * @return void
-     */
-    protected $property;
-
-    /**
-     * @var ViewModel
-     *
-     * @return void
-     */
-    protected $view;
-
-    /**
-     * @var LayoutModel
-     *
-     * @return void
-     */
-    protected $layout;
-
-    /**
-     * @var TabModel
-     *
-     * @return void
-     */
-    protected $tab;
-
-    /**
-     * @var UserModel
-     *
-     * @return void
-     */
-    protected $user;
-
-    /**
-     * @var DocumentTypeModel
-     *
-     * @return void
-     */
-     protected $documentType;
-
-    /**
      * @var DocumentModel
      *
      * @return void
@@ -117,101 +59,50 @@ class EditorTest extends \PHPUnit_Framework_TestCase
      */
     protected function setUp()
     {
-        $this->view = ViewModel::fromArray(
+        $this->property = $this->getMock(
+            'Gc\Property\Model',
             array(
-                'name' => 'View Name',
-                'identifier' => 'View identifier',
-                'description' => 'View Description',
-                'content' => 'View Content'
+                'getName',
+                'getId',
+                'getValue',
             )
         );
-        $this->view->save();
+        $this->property->expects($this->any())
+            ->method('getName')
+            ->will($this->returnValue('name'));
+        $this->property->expects($this->any())
+            ->method('getId')
+            ->will($this->returnValue(1));
+        $this->property->expects($this->any())
+            ->method('getValue')
+            ->will($this->returnValue($this->getValue()));
 
-        $this->layout = LayoutModel::fromArray(
+        $this->datatype = $this->getMock(
+            'Datatypes\ImageCropper\Datatype',
             array(
-                'name' => 'Layout Name',
-                'identifier' => 'Layout identifier',
-                'description' => 'Layout Description',
-                'content' => 'Layout Content'
+                'getName',
+                'getProperty',
+                'getConfig',
+                'setConfig',
+                'getDocument',
             )
         );
-        $this->layout->save();
+        $this->datatype->expects($this->any())
+            ->method('getName')
+            ->will($this->returnValue('name'));
+        $this->datatype->expects($this->any())
+            ->method('getProperty')
+            ->will($this->returnValue($this->property));
 
-        $this->user = UserModel::fromArray(
-            array(
-                'lastname' => 'User test',
-                'firstname' => 'User test',
-                'email' => 'pierre.rambaud86@gmail.com',
-                'login' => 'test',
-                'user_acl_role_id' => 1,
-            )
-        );
-        $this->user->setPassword('test');
-        $this->user->save();
+        $this->document = $this->getMock('Gc\Document\Model', array('getId'));
+        $this->document->expects($this->any())
+            ->method('getId')
+            ->will($this->returnValue(1));
+        $this->datatype->expects($this->any())
+            ->method('getDocument')
+            ->will($this->returnValue($this->document));
 
-        $this->documentType = DocumentTypeModel::fromArray(
-            array(
-                'name' => 'Document Type Name',
-                'description' => 'Document Type description',
-                'icon_id' => 1,
-                'defaultview_id' => $this->view->getId(),
-                'user_id' => $this->user->getId(),
-            )
-        );
-        $this->documentType->save();
-
-        $this->datatype = DatatypeModel::fromArray(
-            array(
-                'name' => 'UploadTest',
-                'prevalue_value' => 'a:1:{s:6:"length";i:10;}',
-                'model' => 'Upload',
-            )
-        );
-        $this->datatype->save();
-
-        $this->tab = TabModel::fromArray(
-            array(
-                'name' => 'TabTest',
-                'description' => 'TabTest',
-                'sort_order' => 1,
-                'document_type_id' => $this->documentType->getId(),
-            )
-        );
-        $this->tab->save();
-
-        $this->property = PropertyModel::fromArray(
-            array(
-                'name' => 'DatatypeTest',
-                'identifier' => 'DatatypeTest',
-                'description' => 'DatatypeTest',
-                'required' => false,
-                'sort_order' => 1,
-                'tab_id' => $this->tab->getId(),
-                'datatype_id' => $this->datatype->getId(),
-            )
-        );
-
-        $this->property->save();
-
-        $this->document = DocumentModel::fromArray(
-            array(
-                'name' => 'jQueryFileUploadTest',
-                'url_key' => '/jqueryfileupload-test',
-                'status' => DocumentModel::STATUS_ENABLE,
-                'sort_order' => 1,
-                'show_in_nav' => false,
-                'user_id' => $this->user->getId(),
-                'document_type_id' => $this->documentType->getId(),
-                'view_id' => $this->view->getId(),
-                'layout_id' => $this->layout->getId(),
-                'parent_id' => 0,
-            )
-        );
-        $this->document->save();
-
-        $datatype = new Datatype();
-        $datatype->load($this->datatype, $this->document->getId());
-        $this->object = $datatype->getEditor($this->property);
+        $this->object = new Editor($this->datatype);
     }
 
     /**
@@ -224,23 +115,7 @@ class EditorTest extends \PHPUnit_Framework_TestCase
     {
         $_FILES = array();
         $_POST  = array();
-        $this->datatype->delete();
-        $this->document->delete();
-        $this->documentType->delete();
-        $this->layout->delete();
-        $this->property->delete();
-        $this->tab->delete();
-        $this->user->delete();
-        $this->view->delete();
 
-        unset($this->datatype);
-        unset($this->document);
-        unset($this->documentType);
-        unset($this->layout);
-        unset($this->property);
-        unset($this->tab);
-        unset($this->user);
-        unset($this->view);
         unset($this->object);
     }
 
@@ -253,19 +128,11 @@ class EditorTest extends \PHPUnit_Framework_TestCase
      */
     public function testSave()
     {
-        $this->object->setConfig(
-            array(
-                'is_multiple' => true,
-                'mime_list' => array(
-                    'image/gif',
-                    'image/jpeg',
-                    'image/png',
-                )
-            )
-        );
-
+        $this->datatype->expects($this->any())
+            ->method('getConfig')
+            ->will($this->returnValue($this->getConfig()));
         $_FILES = array(
-            $this->object->getName() => array(
+            'name1' => array(
                 'name' => __DIR__ . '/_files/test.jpg',
                 'type' => 'plain/text',
                 'size' => 8,
@@ -290,21 +157,11 @@ class EditorTest extends \PHPUnit_Framework_TestCase
      */
     public function testSaveWithEmptyFilesVar()
     {
-        $this->object->getRequest()->getPost()->set($this->object->getName() . '-hidden', '1');
-        $this->object->setConfig(
-            array(
-                'is_multiple' => true,
-                'mime_list' => array(
-                    'image/gif',
-                    'image/jpeg',
-                    'image/png',
-                )
-            )
-        );
-
-        $this->object->save();
-
-        $this->assertEquals('1', $this->object->getValue());
+        $this->datatype->expects($this->any())
+            ->method('getConfig')
+            ->will($this->returnValue(array('is_multiple' => true, 'mime_list' => array())));
+        $this->object->getRequest()->getPost()->set('name1-hidden', '1');
+        $this->assertNull($this->object->save());
     }
 
     /**
@@ -316,19 +173,11 @@ class EditorTest extends \PHPUnit_Framework_TestCase
      */
     public function testSaveWithWrongMimeType()
     {
-        $this->object->setConfig(
-            array(
-                'is_multiple' => true,
-                'mime_list' => array(
-                    'image/gif',
-                    'image/jpeg',
-                    'image/png',
-                )
-            )
-        );
-
+        $this->datatype->expects($this->any())
+            ->method('getConfig')
+            ->will($this->returnValue($this->getConfig()));
         $_FILES = array(
-            $this->object->getName() => array(
+            'name1' => array(
                 'name' => __DIR__ . '/_files/test.bmp',
                 'type' => 'plain/text',
                 'size' => 8,
@@ -353,9 +202,11 @@ class EditorTest extends \PHPUnit_Framework_TestCase
      */
     public function testLoad()
     {
-        $this->object->setConfig(array('is_multiple' => true));
-        $this->object->setValue('value');
-
+        $config = $this->getConfig();
+        $config['is_multiple'] = true;
+        $this->datatype->expects($this->any())
+            ->method('getConfig')
+            ->will($this->returnValue($config));
         $this->assertInternalType('array', $this->object->load());
     }
 
@@ -381,5 +232,50 @@ class EditorTest extends \PHPUnit_Framework_TestCase
                 $tmpDir = realpath(dirname($tmpDir));
             }
         }
+    }
+
+    protected function getValue()
+    {
+        return serialize(
+            array(
+                'original' => array(
+                    'value' => '/media/files/test/test.jpg',
+                    'width' => 10,
+                    'height' => 10,
+                    'html' => 2,
+                    'mime' => 'image/jpeg',
+                ),
+                '223x112' => array(
+                    'value' => '/media/files/test/test-223x112.jpg',
+                    'width' => 223,
+                    'height' => 112,
+                    'html' => 2,
+                    'mime' => 'image/jpeg',
+                    'x' => 0,
+                    'y' => 0,
+                ),
+                '800x600' => array(
+                    'value' => '/media/files/test/test.jpg',
+                    'width' => 223,
+                    'height' => 112,
+                    'html' => 2,
+                    'mime' => 'image/jpeg',
+                    'x' => 0,
+                    'y' => 0,
+                ),
+            )
+        );
+    }
+
+    protected function getConfig()
+    {
+        return array(
+            'is_multiple' => false,
+            'mime_list' => array(
+                'image/gif',
+                'image/jpeg',
+                'image/png',
+            )
+        );
     }
 }

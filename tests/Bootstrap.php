@@ -103,15 +103,6 @@ if (!class_exists('Zend\Loader\AutoloaderFactory')) {
  * Load the user-defined test configuration file, if it exists; otherwise, load
  * the default configuration.
  */
-if (is_readable($gcTests . DIRECTORY_SEPARATOR . 'TestConfiguration.php')) {
-    include_once $gcTests . DIRECTORY_SEPARATOR . 'TestConfiguration.php';
-} else {
-    include_once $gcTests . DIRECTORY_SEPARATOR . 'TestConfiguration.php.dist';
-}
-
-require_once 'config/prepare-database.php';
-require_once 'config/override-php-functions.php';
-$dbAdapter = Registry::get('Db');
 
 // Run application
 \Zend\Console\Console::overrideIsConsole(false);
@@ -122,8 +113,7 @@ $application->getRequest()->setBasePath('http://got-cms.com');
 //Remove all event observer
 \Gc\Event\StaticEventManager::resetInstance();
 
-\Zend\Db\TableGateway\Feature\GlobalAdapterFeature::setStaticAdapter($dbAdapter);
-Registry::set('Db', $dbAdapter);
+require_once 'config/override-php-functions.php';
 /*
  * Unset global variables that are no longer needed.
  */

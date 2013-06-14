@@ -21,6 +21,7 @@
     <logging>
         <log type="coverage-html" target="./logs/coverage" charset="UTF-8"
              yui="true" highlight="false" lowUpperBound="35" highLowerBound="80" />
+        <log type="coverage-clover" target="./logs/clover.xml"/>
     </logging>
     <filter>
         <whitelist>
