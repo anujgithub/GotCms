@@ -25,6 +25,12 @@
  */
 namespace Gc;
 
+use Gc\Event\StaticEventManager;
+use Gc\Registry;
+use Zend\Console\Console;
+use Zend\Loader\AutoloaderFactory;
+use Zend\Mvc\Application;
+
 /*
  * Set error reporting to the level to which Es code must comply.
  */
@@ -84,7 +90,7 @@ if ($zfPath) {
         $loader->register();
     } else {
         include $zfPath . '/Zend/Loader/AutoloaderFactory.php';
-        \Zend\Loader\AutoloaderFactory::factory(
+        AutoloaderFactory::factory(
             array(
                 'Zend\Loader\StandardAutoloader' => $configuration['autoloader'],
             )
@@ -105,14 +111,15 @@ if (!class_exists('Zend\Loader\AutoloaderFactory')) {
  */
 
 // Run application
-\Zend\Console\Console::overrideIsConsole(false);
-$application = \Zend\Mvc\Application::init($configuration);
+Console::overrideIsConsole(false);
+$application = Application::init($configuration);
 $application->getMvcEvent()->getRouter()->setRequestUri($application->getRequest()->getUri());
 $application->getRequest()->setBasePath('http://got-cms.com');
-\Gc\Registry::set('Application', $application);
+Registry::set('Application', $application);
 //Remove all event observer
-\Gc\Event\StaticEventManager::resetInstance();
+StaticEventManager::resetInstance();
 
+require_once 'config/mock-database.php';
 require_once 'config/override-php-functions.php';
 /*
  * Unset global variables that are no longer needed.
