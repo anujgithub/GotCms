@@ -27,10 +27,12 @@
 
 namespace Gc\View\Helper;
 
-use Zend\View\Helper\AbstractHelper;
-use Gc\Registry;
 use Gc\Script\Model as ScriptModel;
 use Gc\View\Stream;
+use Zend\View\Helper\AbstractHelper;
+use Zend\Http\PhpEnvironment\Request;
+use Zend\Http\PhpEnvironment\Response;
+use Zend\Mvc\Controller\PluginManager;
 
 /**
  * Retrieve script from identifier
@@ -48,6 +50,13 @@ class Script extends AbstractHelper
      * @var array
      */
     protected $__params = array();
+
+    public function __construct(Request $request, Response $response, PluginManager$pluginManager)
+    {
+        $this->request       = $request;
+        $this->response      = $response;
+        $this->pluginManager = $pluginManager;
+    }
 
     /**
      * Returns script from identifier.
@@ -107,7 +116,7 @@ class Script extends AbstractHelper
      */
     public function getRequest()
     {
-        return Registry::get('Application')->getRequest();
+        return $this->request;
     }
 
     /**
@@ -117,7 +126,7 @@ class Script extends AbstractHelper
      */
     public function getResponse()
     {
-        return Registry::get('Application')->getResponse();
+        return $this->response;
     }
 
     /**
@@ -130,7 +139,7 @@ class Script extends AbstractHelper
      */
     public function plugin($name, array $options = null)
     {
-        return Registry::get('Application')->getServiceManager()->get('controllerPluginManager')->get($name, $options);
+        return $this->pluginManager->get($name, $options);
     }
 
     /**

@@ -49,17 +49,35 @@ class Cdn extends AbstractHelper
     protected $basePath = null;
 
     /**
+     * Uri scheme
+     *
+     * @var string
+     */
+    protected $scheme = null;
+
+    /**
+     * Constructor
+     *
+     * @param string $scheme Scheme
+     *
+     * @return void
+     */
+    public function __construct($scheme)
+    {
+        $this->scheme = $scheme;
+    }
+
+    /**
      * Generates an url with the given path.
      *
      * @param string $path Path
      *
-     * @return string  Url
+     * @return string Url
      */
     public function __invoke($path)
     {
         if ($this->basePath === null) {
-            $scheme = Registry::get('Application')->getRequest()->getUri()->getScheme();
-            if (CoreConfig::getValue('force_frontend_ssl') or $scheme === 'https') {
+            if (CoreConfig::getValue('force_frontend_ssl') or $this->scheme === 'https') {
                 $basePath = CoreConfig::getValue('secure_cdn_base_path');
             } else {
                 $basePath = CoreConfig::getValue('unsecure_cdn_base_path');

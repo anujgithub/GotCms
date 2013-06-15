@@ -54,16 +54,16 @@ abstract class AbstractObserver
      *
      * @var array
      */
-    protected $config;
+    protected $serviceLocator;
 
     /**
      * Constructor
      *
-     * @param array $config Configuration
+     * @param array $serviceLocator Service manager
      */
-    public function __construct($config)
+    public function __construct($serviceLocator)
     {
-        $this->config = $config;
+        $this->serviceLocator = $serviceLocator;
     }
 
     /**
@@ -90,11 +90,12 @@ abstract class AbstractObserver
      */
     protected function getDriverName()
     {
-        if (!isset($this->config['db']['driver'])) {
+        $config = $this->serviceLocator->get('Config');
+        if (!isset($config['db']['driver'])) {
             return false;
         }
 
-         return $this->config['db']['driver'];
+         return $config['db']['driver'];
     }
 
     /**

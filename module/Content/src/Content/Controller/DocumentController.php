@@ -239,9 +239,10 @@ class DocumentController extends Action
                 );
             }
 
-            $tabs      = $this->loadTabs($documentTypeId);
-            $tabsArray = array();
-            $datatypes = array();
+            $viewhelperManager = $this->getServiceLocator()->get('viewHelperManager');
+            $tabs              = $this->loadTabs($documentTypeId);
+            $tabsArray         = array();
+            $datatypes         = array();
 
             $idx = 1;
             foreach ($tabs as $tab) {
@@ -255,7 +256,7 @@ class DocumentController extends Action
                         $connection->beginTransaction();
                         foreach ($properties as $property) {
                             $property->setDocumentId($document->getId())->loadValue();
-                            if (!Datatype\Model::saveEditor($property, $document)) {
+                            if (!Datatype\Model::saveEditor($viewhelperManager, $property, $document)) {
                                 $hasError = true;
                             }
                         }
@@ -270,7 +271,6 @@ class DocumentController extends Action
                     }
                 }
 
-                $viewhelperManager = $this->getServiceLocator()->get('viewHelperManager');
                 foreach ($properties as $property) {
 
                     AbstractForm::addContent(

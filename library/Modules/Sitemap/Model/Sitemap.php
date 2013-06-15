@@ -85,7 +85,7 @@ class Sitemap extends Object
             xsi:schemaLocation="http://www.sitemaps.org/schemas/sitemap/0.9
             http://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd">';
 
-        $request = Registry::get('Application')->getRequest();
+        $request = $this->getServiceLocator()->get('Application')->getRequest();
         $url     = $request->getBasePath();
         if (empty($url)) {
             $url = $request->getUri()->toString();

@@ -49,6 +49,34 @@ class CdnBackend extends AbstractHelper
     protected $basePath = null;
 
     /**
+     * Uri scheme
+     *
+     * @var string
+     */
+    protected $scheme;
+
+    /**
+     * Boolean meaning if the database exists
+     *
+     * @var boolean
+     */
+    protected $dbIsRegistered;
+
+    /**
+     * Constructor
+     *
+     * @param string  $scheme         Scheme
+     * @param boolean $dbIsRegistered Db is registered
+     *
+     * @return void
+     */
+    public function __construct($scheme, $dbIsRegistered)
+    {
+        $this->scheme         = $scheme;
+        $this->dbIsRegistered = $dbIsRegistered;
+    }
+
+    /**
      * Generates an url with the given path.
      *
      * @param string $path Path
@@ -59,9 +87,8 @@ class CdnBackend extends AbstractHelper
     {
         if ($this->basePath === null) {
             $basePath = '';
-            if (Registry::isRegistered('Db')) {
-                $scheme = Registry::get('Application')->getRequest()->getUri()->getScheme();
-                if (CoreConfig::getValue('force_backend_ssl') or $scheme === 'https') {
+            if ($this->dbIsRegistered) {
+                if (CoreConfig::getValue('force_backend_ssl') or $this->scheme === 'https') {
                     $basePath = CoreConfig::getValue('secure_cdn_base_path');
                 } else {
                     $basePath = CoreConfig::getValue('unsecure_cdn_base_path');

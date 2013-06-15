@@ -222,9 +222,13 @@ class Editor extends AbstractEditor
             return $this->datatypes[$name];
         }
 
+        $helperBroker  = $this->getDatatype()->getHelperBroker();
+        $datatypeModel = $this->getDatatype()->getDatatypeModel();
+        $documentId    = $this->getProperty()->getDocumentId();
+
         $class  = 'Datatypes\\' . $name . '\Datatype';
         $object = new $class();
-        $object->load($this->getDatatype()->getHelperBroker(), $this->getDatatype()->getDatatypeModel(), $this->getProperty()->getDocumentId());
+        $object->load($helperBroker, $datatypeModel, $documentId);
         $this->datatypes[$name] = $object;
         return $this->datatypes[$name];
     }

@@ -62,6 +62,7 @@ class Observer extends AbstractObserver
     public function addElement(Event $event)
     {
         $sitemap = new Sitemap();
+        $sitemap->setServiceLocator($this->serviceLocator);
         if (file_exists($sitemap->getFilePath())) {
             $document = $event->getParam('object');
             if ($document->hasDataChangedFor('url_key')) {
@@ -73,7 +74,7 @@ class Observer extends AbstractObserver
                 $obj = $xml->xpath(
                     sprintf(
                         '//sm:url[sm:loc="%s%s"]',
-                        Registry::get('Application')->getRequest()->getBasePath(),
+                        $this->serviceLocator->get('Application')->getRequest()->getBasePath(),
                         $document->getUrl()
                     )
                 );
@@ -100,6 +101,7 @@ class Observer extends AbstractObserver
     public function removeElement(Event $event)
     {
         $sitemap = new Sitemap();
+        $sitemap->setServiceLocator($this->serviceLocator);
         if (file_exists($sitemap->getFilePath())) {
             $document  = $event->getParam('object');
             $oldUrlKey = $document->getUrlKey();
@@ -110,7 +112,7 @@ class Observer extends AbstractObserver
             $obj = $xml->xpath(
                 sprintf(
                     '//sm:url[sm:loc="%s%s"]',
-                    Registry::get('Application')->getRequest()->getBasePath(),
+                    $this->serviceLocator->get('Application')->getRequest()->getBasePath(),
                     $document->getUrl()
                 )
             );
