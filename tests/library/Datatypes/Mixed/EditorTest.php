@@ -90,28 +90,29 @@ class EditorTest extends \PHPUnit_Framework_TestCase
         $datatype->expects($this->any())
             ->method('getDatatypeModel')
             ->will($this->returnSelf());
-        $viewHelperManager = $this->getMock( 'Zend\View\HelperPluginManager', array(), array(), '', false);
+
+        $viewHelperManager = $this->getMock('Zend\View\HelperPluginManager', array(), array(), '', false);
         $datatype->expects($this->any())
             ->method('getHelperBroker')
             ->will($this->returnValue($viewHelperManager));
 
         $datatype->expects($this->any())
             ->method('getConfig')
-            ->will($this->returnValue(
-                array (
-                    'datatypes' =>
-                    array (
-                        0 =>
-                        array (
-                            'name' => 'Textstring',
-                            'label' => 'Test',
-                            'config' => array (
-                                'length' => '',
+            ->will(
+                $this->returnValue(
+                    array(
+                        'datatypes' => array(
+                            0 => array(
+                                'name'   => 'Textstring',
+                                'label'  => 'Test',
+                                'config' => array(
+                                    'length' => '',
+                                ),
                             ),
                         ),
-                    ),
+                    )
                 )
-            ));
+            );
 
         $document = $this->getMock('Gc\Document\Model', array('getId'));
         $document->expects($this->any())
@@ -150,15 +151,17 @@ class EditorTest extends \PHPUnit_Framework_TestCase
     {
         $this->property->expects($this->any())
             ->method('getValue')
-            ->will($this->returnValue(
-                serialize(
-                    array(
+            ->will(
+                $this->returnValue(
+                    serialize(
                         array(
-                            'value' => __DIR__ . '/_files/test.jpg',
+                            array(
+                                'value' => __DIR__ . '/_files/test.jpg',
+                            )
                         )
                     )
                 )
-            ));
+            );
 
         $post = $this->object->getRequest()->getPost();
         $post->set(
@@ -168,7 +171,8 @@ class EditorTest extends \PHPUnit_Framework_TestCase
                     array(
                         'textstring51' => 'test1',
                     ),
-                ), array(
+                ),
+                array(
                     array(
                         'textstring51' => 'test2',
                     ),
@@ -245,8 +249,12 @@ class EditorTest extends \PHPUnit_Framework_TestCase
     {
         $this->property->expects($this->any())
             ->method('getValue')
-            ->will($this->returnValue('a:3:{i:0;a:1:{i:0;a:1:{s:5:"value";s:5:"test1";}}i:1;a:1:{i:0;a:0:{}}i:3;a:1:{i:25;a:0:{}}}'
-            ));
+            ->will(
+                $this->returnValue(
+                    'a:3:{i:0;a:1:{i:0;a:1:{s:5:"value";s:5:"test1";}}' .
+                    'i:1;a:1:{i:0;a:0:{}}i:3;a:1:{i:25;a:0:{}}}'
+                )
+            );
         $this->assertInternalType('string', $this->object->load());
     }
 }

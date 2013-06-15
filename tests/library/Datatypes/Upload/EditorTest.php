@@ -26,6 +26,7 @@
  */
 
 namespace Datatypes\Upload;
+
 use Gc\Media\File;
 
 /**
@@ -202,7 +203,7 @@ class EditorTest extends \PHPUnit_Framework_TestCase
      */
     public function testLoad()
     {
-        $config = $this->getConfig();
+        $config                = $this->getConfig();
         $config['is_multiple'] = true;
         $this->datatype->expects($this->any())
             ->method('getConfig')
@@ -234,6 +235,11 @@ class EditorTest extends \PHPUnit_Framework_TestCase
         }
     }
 
+    /**
+     * Get value
+     *
+     * @return array
+     */
     protected function getValue()
     {
         return serialize(
@@ -267,6 +273,11 @@ class EditorTest extends \PHPUnit_Framework_TestCase
         );
     }
 
+    /**
+     * Get config
+     *
+     * @return array
+     */
     protected function getConfig()
     {
         return array(

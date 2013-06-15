@@ -176,6 +176,8 @@ class Module extends Mvc\Module
     /**
      * Initialize modules events
      *
+     * @param array $config Configuration
+     *
      * @return void
      */
     public function initObserverModules($config)

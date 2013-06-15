@@ -702,9 +702,8 @@ class InstallControllerTest extends AbstractHttpControllerTestCase
      */
     public function testCompleteActionDatabase()
     {
-        $dbAdapter     = Registry::get('Db');
-
-        $session = new SessionContainer();
+        $dbAdapter = Registry::get('Db');
+        $session   = new SessionContainer();
         $session->offsetSet(
             'install',
             array(
@@ -754,9 +753,8 @@ class InstallControllerTest extends AbstractHttpControllerTestCase
      */
     public function testCompleteActionData()
     {
-        $dbAdapter     = Registry::get('Db');
-
-        $session = new SessionContainer();
+        $dbAdapter = Registry::get('Db');
+        $session   = new SessionContainer();
         $session->offsetSet(
             'install',
             array(
@@ -818,9 +816,8 @@ class InstallControllerTest extends AbstractHttpControllerTestCase
      */
     public function testCompleteActionTemplate()
     {
-        $dbAdapter     = Registry::get('Db');
-
-        $session = new SessionContainer();
+        $dbAdapter = Registry::get('Db');
+        $session   = new SessionContainer();
         $session->offsetSet(
             'install',
             array(
@@ -871,9 +868,8 @@ class InstallControllerTest extends AbstractHttpControllerTestCase
      */
     public function testCompleteActionConfiguration()
     {
-        $dbAdapter     = Registry::get('Db');
-
-        $session = new SessionContainer();
+        $dbAdapter = Registry::get('Db');
+        $session   = new SessionContainer();
         $session->offsetSet(
             'install',
             array(

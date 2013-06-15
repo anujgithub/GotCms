@@ -67,15 +67,17 @@ class EditorTest extends \PHPUnit_Framework_TestCase
             ->will($this->returnValue(1));
         $property->expects($this->any())
             ->method('getValue')
-            ->will($this->returnValue(
-                serialize(
-                    array(
+            ->will(
+                $this->returnValue(
+                    serialize(
                         array(
-                            'value' => __DIR__ . '/_files/test.jpg',
+                            array(
+                                'value' => __DIR__ . '/_files/test.jpg',
+                            )
                         )
                     )
                 )
-            ));
+            );
 
         $datatype = $this->getMock(
             'Datatypes\jQueryFileUpload\Datatype',
@@ -99,16 +101,18 @@ class EditorTest extends \PHPUnit_Framework_TestCase
             ->will($this->returnValue(''));
         $datatype->expects($this->any())
             ->method('getConfig')
-            ->will($this->returnValue(
-                array(
-                    'is_multiple' => true,
-                    'mime_list' => array(
-                        'image/gif',
-                        'image/jpeg',
-                        'image/png',
+            ->will(
+                $this->returnValue(
+                    array(
+                        'is_multiple' => true,
+                        'mime_list' => array(
+                            'image/gif',
+                            'image/jpeg',
+                            'image/png',
+                        )
                     )
                 )
-            ));
+            );
 
         $document = $this->getMock('Gc\Document\Model', array('getId'));
         $document->expects($this->any())

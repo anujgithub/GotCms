@@ -105,7 +105,7 @@ class DatatypeController extends Action
         }
 
         $viewHelperManager = $this->getServiceLocator()->get('viewHelperManager');
-        $datatype = Datatype\Model::loadDatatype($viewHelperManager, $this->getRouteMatch()->getParam('id'));
+        $datatype          = Datatype\Model::loadDatatype($viewHelperManager, $this->getRouteMatch()->getParam('id'));
 
         $datatypeForm = new DatatypeForm();
         $datatypeForm->setAttribute(

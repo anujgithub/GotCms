@@ -76,19 +76,22 @@ class PrevalueEditorTest extends \PHPUnit_Framework_TestCase
             ->will($this->returnSelf());
         $datatype->expects($this->any())
             ->method('getConfig')
-            ->will($this->returnValue(array(
-                  'datatypes' => array (
-                      0 => array (
-                          'name' => 'Textstring',
-                          'label' => 'Test',
-                          'config' => array (
-                              'length' => '',
-                          ),
-                      ),
-                  ),
+            ->will(
+                $this->returnValue(
+                    array(
+                        'datatypes' => array(
+                            0 => array(
+                                'name'   => 'Textstring',
+                                'label'  => 'Test',
+                                'config' => array(
+                                    'length' => '',
+                                ),
+                            ),
+                        ),
+                    )
                 )
-            ));
-        $viewHelperManager = $this->getMock( 'Zend\View\HelperPluginManager', array(), array(), '', false);
+            );
+        $viewHelperManager = $this->getMock('Zend\View\HelperPluginManager', array(), array(), '', false);
         $datatype->expects($this->any())
             ->method('getHelperBroker')
             ->will($this->returnValue($viewHelperManager));

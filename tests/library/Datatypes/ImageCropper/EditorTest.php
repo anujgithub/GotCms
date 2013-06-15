@@ -260,6 +260,11 @@ class EditorTest extends \PHPUnit_Framework_TestCase
         }
     }
 
+    /**
+     * Get value
+     *
+     * @return array
+     */
     protected function getValue()
     {
         return serialize(
@@ -293,6 +298,11 @@ class EditorTest extends \PHPUnit_Framework_TestCase
         );
     }
 
+    /**
+     * Get Configuration
+     *
+     * @return array
+     */
     protected function getConfig()
     {
         return array(
