@@ -14,7 +14,6 @@ env:
   - DB=pgsql
 
 before_install:
-  - cp tests/config/global.php config/autoload/global.php
   - cp tests/phpunit.travis.xml.dist tests/phpunit.xml
   - curl -s http://getcomposer.org/installer | php
   - php composer.phar install --dev --prefer-source --no-interaction
