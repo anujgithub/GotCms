@@ -101,16 +101,13 @@ abstract class AbstractTable extends Object
     public function fetchRow($query, $parameters = null)
     {
         if ($query instanceof ResultSet) {
-            $resultSet = $query;
-        } else {
-            $resultSet = new ResultSet();
-            $resultSet->initialize($this->execute($query, $parameters));
+            return $query->current();
         }
 
-        $result = $resultSet->getDataSource()->getResource()->fetch(PDO::FETCH_ASSOC);
-        $resultSet->getDataSource()->getResource()->closeCursor();
+        $resultSet = new ResultSet();
+        $resultSet->initialize($this->execute($query, $parameters));
 
-        return $result;
+        return $resultSet->current();
     }
 
     /**
@@ -124,16 +121,13 @@ abstract class AbstractTable extends Object
     public function fetchAll($query, $parameters = null)
     {
         if ($query instanceof ResultSet) {
-            $resultSet = $query;
-        } else {
-            $resultSet = new ResultSet();
-            $resultSet->initialize($this->execute($query, $parameters));
+            return $query->toArray();
         }
 
-        $result = $resultSet->getDataSource()->getResource()->fetchAll(PDO::FETCH_ASSOC);
-        $resultSet->getDataSource()->getResource()->closeCursor();
+        $resultSet = new ResultSet();
+        $resultSet->initialize($this->execute($query, $parameters));
 
-        return $result;
+        return $resultSet->toArray();
     }
 
     /**
@@ -147,16 +141,17 @@ abstract class AbstractTable extends Object
     public function fetchOne($query, $parameters = null)
     {
         if ($query instanceof ResultSet) {
-            $resultSet = $query;
+            $row = $query->current();
         } else {
-            $resultSet = new ResultSet();
-            $resultSet->initialize($this->execute($query, $parameters));
+            $row = $this->fetchRow($query, $parameters);
         }
 
-        $result = $resultSet->getDataSource()->getResource()->fetchColumn();
-        $resultSet->getDataSource()->getResource()->closeCursor();
+        if (!empty($row)) {
+            $array = $row->getArrayCopy();
+            return array_shift($array);
+        }
 
-        return $result;
+        return false;
     }
 
     /**
