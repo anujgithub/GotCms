@@ -224,7 +224,7 @@ class Editor extends AbstractEditor
 
         $class  = 'Datatypes\\' . $name . '\Datatype';
         $object = new $class();
-        $object->load($this->getDatatype()->getDatatypeModel(), $this->getProperty()->getDocumentId());
+        $object->load($this->getDatatype()->getHelperBroker(), $this->getDatatype()->getDatatypeModel(), $this->getProperty()->getDocumentId());
         $this->datatypes[$name] = $object;
         return $this->datatypes[$name];
     }

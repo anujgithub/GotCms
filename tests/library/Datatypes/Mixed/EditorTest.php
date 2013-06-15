@@ -75,6 +75,7 @@ class EditorTest extends \PHPUnit_Framework_TestCase
                 'getDocument',
                 'getUploadUrl',
                 'getDatatypeModel',
+                'getHelperBroker',
             )
         );
         $datatype->expects($this->any())
@@ -89,6 +90,11 @@ class EditorTest extends \PHPUnit_Framework_TestCase
         $datatype->expects($this->any())
             ->method('getDatatypeModel')
             ->will($this->returnSelf());
+        $viewHelperManager = $this->getMock( 'Zend\View\HelperPluginManager', array(), array(), '', false);
+        $datatype->expects($this->any())
+            ->method('getHelperBroker')
+            ->will($this->returnValue($viewHelperManager));
+
         $datatype->expects($this->any())
             ->method('getConfig')
             ->will($this->returnValue(

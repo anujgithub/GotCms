@@ -85,6 +85,7 @@ class EditorTest extends \PHPUnit_Framework_TestCase
                 'getConfig',
                 'getDocument',
                 'getUploadUrl',
+                'getHelper',
             )
         );
         $datatype->expects($this->any())
@@ -117,6 +118,20 @@ class EditorTest extends \PHPUnit_Framework_TestCase
             ->method('getDocument')
             ->will($this->returnValue($document));
 
+        $helperManager = $this->getMock('Zend\View\HelperManager', array('appendFile', 'appendStylesheet', '__invoke'));
+        $helperManager->expects($this->any())
+            ->method('appendFile')
+            ->will($this->returnSelf());
+        $helperManager->expects($this->any())
+            ->method('appendStylesheet')
+            ->will($this->returnSelf());
+        $helperManager->expects($this->any())
+            ->method('__invoke')
+            ->will($this->returnSelf());
+
+        $datatype->expects($this->any())
+            ->method('getHelper')
+            ->will($this->returnValue($helperManager));
 
         $this->object = new Editor($datatype);
     }

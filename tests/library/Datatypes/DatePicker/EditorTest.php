@@ -61,13 +61,22 @@ class EditorTest extends \PHPUnit_Framework_TestCase
             ->method('getValue')
             ->will($this->returnValue('1'));
 
-        $datatype = $this->getMock('Datatypes\DatePicker\Datatype', array('getName', 'getProperty'));
+        $datatype = $this->getMock('Datatypes\DatePicker\Datatype', array('getName', 'getProperty', 'getHelper'));
         $datatype->expects($this->any())
             ->method('getName')
             ->will($this->returnValue('name'));
         $datatype->expects($this->any())
             ->method('getProperty')
             ->will($this->returnValue($property));
+
+        $helperManager = $this->getMock('Zend\View\HelperManager', array('appendFile'));
+        $helperManager->expects($this->any())
+            ->method('appendFile')
+            ->will($this->returnValue('string'));
+
+        $datatype->expects($this->any())
+            ->method('getHelper')
+            ->will($this->returnValue($helperManager));
 
         $this->object = new Editor($datatype);
     }

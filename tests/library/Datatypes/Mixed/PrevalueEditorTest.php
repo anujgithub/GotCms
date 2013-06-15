@@ -59,6 +59,7 @@ class PrevalueEditorTest extends \PHPUnit_Framework_TestCase
                 'getDocument',
                 'getUploadUrl',
                 'getDatatypeModel',
+                'getHelperBroker',
             )
         );
         $datatype->expects($this->any())
@@ -87,6 +88,10 @@ class PrevalueEditorTest extends \PHPUnit_Framework_TestCase
                   ),
                 )
             ));
+        $viewHelperManager = $this->getMock( 'Zend\View\HelperPluginManager', array(), array(), '', false);
+        $datatype->expects($this->any())
+            ->method('getHelperBroker')
+            ->will($this->returnValue($viewHelperManager));
 
         $this->object = new PrevalueEditor($datatype);
     }

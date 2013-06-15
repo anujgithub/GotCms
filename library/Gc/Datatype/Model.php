@@ -239,8 +239,6 @@ class Model extends AbstractTable
      */
     public static function loadDatatype(HelperPluginManager $viewHelperManager, $datatypeId, $documentId = null)
     {
-        var_dump(get_class($viewHelperManager));
-        die();
         $datatype = Model::fromId($datatypeId);
         $class    = 'Datatypes\\' . $datatype->getModel() . '\Datatype';
 

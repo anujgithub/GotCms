@@ -34,6 +34,7 @@ use Gc\View\Renderer;
 use Gc\Property;
 use Gc\Registry;
 use ReflectionObject;
+use Zend\View\HelperPluginManager;
 
 /**
  * Abstract Datatype is used to call

@@ -106,7 +106,7 @@ class Editor extends AbstractEditor
             $fileClass = new File();
             $fileClass->load($this->getProperty(), $this->getDatatype()->getDocument());
             foreach ($files as $fileData) {
-                $fileObject                = array();
+                $fileObject                = new StdClass();
                 $fileObject->name          = $fileData['value'];
                 $fileObject->filename      = $fileData['value'];
                 $fileObject->thumbnail_url = $fileData['value'];
