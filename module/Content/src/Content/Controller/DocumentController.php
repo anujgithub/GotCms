@@ -270,8 +270,13 @@ class DocumentController extends Action
                     }
                 }
 
+                $viewhelperManager = $this->getServiceLocator()->get('viewHelperManager');
                 foreach ($properties as $property) {
-                    AbstractForm::addContent($fieldset, Datatype\Model::loadEditor($property, $document));
+
+                    AbstractForm::addContent(
+                        $fieldset,
+                        Datatype\Model::loadEditor($viewhelperManager, $property, $document)
+                    );
                 }
 
                 $documentForm->add($fieldset);

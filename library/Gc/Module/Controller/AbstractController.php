@@ -30,6 +30,7 @@ namespace Gc\Module\Controller;
 use Zend\Stdlib\RequestInterface as Request;
 use Zend\Stdlib\ResponseInterface as Response;
 use Zend\Mvc\Controller\AbstractActionController;
+use Zend\ServiceManager\ServiceLocatorInterface;
 
 /**
  * Abstract module controller
@@ -40,6 +41,12 @@ use Zend\Mvc\Controller\AbstractActionController;
  */
 abstract class AbstractController extends AbstractActionController
 {
+
+    /**
+     * @var ServiceLocatorInterface
+     */
+    protected $serviceLocator;
+
     /**
      * Construct controller with request and response
      *
@@ -52,5 +59,27 @@ abstract class AbstractController extends AbstractActionController
     {
         $this->request  = $request;
         $this->response = $response;
+    }
+
+    /**
+     * Set serviceManager instance
+     *
+     * @param ServiceLocatorInterface $serviceLocator Service manager
+     *
+     * @return void
+     */
+    public function setServiceLocator(ServiceLocatorInterface $serviceLocator)
+    {
+        $this->serviceLocator = $serviceLocator;
+    }
+
+    /**
+     * Retrieve serviceManager instance
+     *
+     * @return ServiceLocatorInterface
+     */
+    public function getServiceLocator()
+    {
+        return $this->serviceLocator;
     }
 }

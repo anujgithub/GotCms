@@ -132,13 +132,15 @@ abstract class AbstractDatatype extends AbstractTable
     /**
      * Load Datatype
      *
-     * @param Model   $datatype   Datatype
-     * @param integer $documentId Document id
+     * @param HelperPluginManager $viewHelperManager View Helper manager
+     * @param Model               $datatype          Datatype
+     * @param integer             $documentId        Document id
      *
      * @return mixed
      */
-    public function load($datatype = null, $documentId = null)
+    public function load(HelperPluginManager $viewHelperManager, $datatype = null, $documentId = null)
     {
+        $this->setHelperBroker($viewHelperManager);
         if (empty($datatype)) {
             return false;
         }
@@ -191,14 +193,14 @@ abstract class AbstractDatatype extends AbstractTable
      */
     public function getUploadUrl($propertyId)
     {
-        $router = Registry::get('Application')->getMvcEvent()->getRouter();
+        $uriHelper = $this->getHelper('url');
 
-        return $router->assemble(
+        return $uriHelper(
+            'content/media/upload',
             array(
                 'document_id' => $this->getDocumentId(),
                 'property_id' => $propertyId
-            ),
-            array('name' => 'content/media/upload')
+            )
         );
     }
 
@@ -211,10 +213,6 @@ abstract class AbstractDatatype extends AbstractTable
      */
     public function getHelper($name)
     {
-        if ($this->getHelperBroker() === null) {
-            $this->setHelperBroker(Registry::get('Application')->getServiceManager()->get('viewhelpermanager'));
-        }
-
         return $this->getHelperBroker()->get($name);
     }
 

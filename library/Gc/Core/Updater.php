@@ -31,6 +31,7 @@ use Gc\Core\Updater\Adapter;
 use Gc\Core\Updater\Script;
 use Gc\Registry;
 use Gc\Version;
+use Zend\Db\TableGateway\Feature\GlobalAdapterFeature;
 
 /**
  * Update cms
@@ -150,20 +151,8 @@ class Updater extends Object
             return false;
         }
 
-        $configuration = Registry::get('Application')->getConfig();
-        $files         = array();
-        $updatePath    = GC_APPLICATION_PATH . '/data/update';
-        $path          = glob($updatePath . '/*');
-        foreach ($path as $file) {
-            $version = str_replace($updatePath . '/v', '', $file);
-            if (version_compare($version, Version::VERSION, '>')) {
-                $fileList = glob(sprintf($file . '/%s/*.sql', $configuration['db']['driver']));
-                if (!empty($fileList)) {
-                    $files[] = $fileList;
-                }
-            }
-        }
-
+        $configuration = $this->getConfig();
+        $files         = $this->getFilesList(sprintf('/%s/*.sql', $configuration['db']['driver']));
         if (empty($files)) {
             return true;
         }
@@ -175,7 +164,7 @@ class Updater extends Object
             }
         }
 
-        $resource = Registry::get('Db')->getDriver()->getConnection()->getResource();
+        $resource = GlobalAdapterFeature::getStaticAdapter();
         try {
             $resource->beginTransaction();
             $stmt = $resource->exec($sql);
@@ -191,6 +180,31 @@ class Updater extends Object
     }
 
     /**
+     * Return file list
+     *
+     * @param string $filePath Path to file
+     *
+     * @return array
+     */
+    protected function getFilesList($filePath)
+    {
+        $files      = array();
+        $updatePath = GC_APPLICATION_PATH . '/data/update';
+        $path       = glob($updatePath . '/*');
+        foreach ($path as $file) {
+            $version = str_replace($updatePath . '/', '', $file);
+            if (version_compare($version, Version::VERSION, '>')) {
+                $fileList = glob($file . $filePath);
+                if (!empty($fileList)) {
+                    $files[] = $fileList;
+                }
+            }
+        }
+
+        return $files;
+    }
+
+    /**
      * Update database
      *
      * @return boolean
@@ -201,19 +215,7 @@ class Updater extends Object
             return false;
         }
 
-        $files      = array();
-        $updatePath = GC_APPLICATION_PATH . '/data/update';
-        $path       = glob($updatePath . '/*');
-        foreach ($path as $file) {
-            $version = str_replace($updatePath . '/v', '', $file);
-            if (version_compare($version, Version::VERSION, '>')) {
-                $fileList = glob($file . '/*.php');
-                if (!empty($fileList)) {
-                    $files[] = $fileList;
-                }
-            }
-        }
-
+        $files = $this->getFilesList('/*.php');
         if (empty($files)) {
             return true;
         }

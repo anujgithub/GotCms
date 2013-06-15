@@ -32,6 +32,7 @@ use Gc\Form\AbstractForm;
 use Gc\Property\Model as PropertyModel;
 use Datatypes;
 use Zend\Form\Fieldset;
+use Zend\View\HelperPluginManager;
 
 /**
  * Datatype Model
@@ -182,13 +183,14 @@ class Model extends AbstractTable
     /**
      * Save editor
      *
-     * @param PropertyModel $property Property
+     * @param HelperPluginManager $viewHelperManager View Helper manager
+     * @param PropertyModel       $property          Property
      *
      * @return mixed
      */
-    public static function saveEditor(PropertyModel $property)
+    public static function saveEditor(HelperPluginManager $viewHelperManager, PropertyModel $property)
     {
-        $datatype = self::loadDatatype($property->getDatatypeId(), $property->getDocumentId());
+        $datatype = self::loadDatatype($viewHelperManager, $property->getDatatypeId(), $property->getDocumentId());
         $datatype->getEditor($property)->save();
         if (!$property->saveValue()) {
             return false;
@@ -214,13 +216,14 @@ class Model extends AbstractTable
     /**
      * Load editor
      *
-     * @param PropertyModel $property Property
+     * @param HelperPluginManager $viewHelperManager View Helper manager
+     * @param PropertyModel       $property          Property
      *
      * @return mixed
      */
-    public static function loadEditor(PropertyModel $property)
+    public static function loadEditor(HelperPluginManager $viewHelperManager, PropertyModel $property)
     {
-        $datatype = self::loadDatatype($property->getDatatypeId(), $property->getDocumentId());
+        $datatype = self::loadDatatype($viewHelperManager, $property->getDatatypeId(), $property->getDocumentId());
 
         return $datatype->getEditor($property)->load();
     }
@@ -228,18 +231,21 @@ class Model extends AbstractTable
     /**
      * Load Datatype
      *
-     * @param integer $datatypeId Datatype id
-     * @param integer $documentId Optional document id
+     * @param HelperPluginManager $viewHelperManager View Helper manager
+     * @param integer             $datatypeId        Datatype id
+     * @param integer             $documentId        Optional document id
      *
      * @return \Gc\Datatype\AbstractDatatype
      */
-    public static function loadDatatype($datatypeId, $documentId = null)
+    public static function loadDatatype(HelperPluginManager $viewHelperManager, $datatypeId, $documentId = null)
     {
+        var_dump(get_class($viewHelperManager));
+        die();
         $datatype = Model::fromId($datatypeId);
         $class    = 'Datatypes\\' . $datatype->getModel() . '\Datatype';
 
         $object = new $class();
-        $object->load($datatype, $documentId);
+        $object->load($viewHelperManager, $datatype, $documentId);
         return $object;
     }
 }

@@ -38,7 +38,6 @@ use Gc\User\Visitor;
 use Gc\View;
 use Zend\Config\Reader\Xml;
 use Zend\Cache\StorageFactory as CacheStorage;
-use Zend\Navigation\Navigation;
 use Zend\View\Model\ViewModel;
 use Exception;
 

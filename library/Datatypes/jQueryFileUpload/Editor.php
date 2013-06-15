@@ -106,20 +106,20 @@ class Editor extends AbstractEditor
             $fileClass = new File();
             $fileClass->load($this->getProperty(), $this->getDatatype()->getDocument());
             foreach ($files as $fileData) {
-                $fileObject                = new StdClass();
+                $fileObject                = array();
                 $fileObject->name          = $fileData['value'];
                 $fileObject->filename      = $fileData['value'];
                 $fileObject->thumbnail_url = $fileData['value'];
 
-                $router                  = Registry::get('Application')->getMvcEvent()->getRouter();
-                $fileObject->delete_url  = $router->assemble(
+                $uriHelper              = $this->getHelper('url');
+                $fileObject->delete_url = $uriHelper('content/media/remove',
                     array(
                         'document_id' => $this->getDatatype()->getDocument()->getId(),
                         'property_id' => $this->getProperty()->getId(),
                         'file' => base64_encode($fileData['value'])
-                    ),
-                    array('name' => 'content/media/remove')
+                    )
                 );
+
                 $fileObject->delete_type = 'DELETE';
                 $fileList[]              = $fileObject;
             }

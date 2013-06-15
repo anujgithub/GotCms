@@ -31,6 +31,7 @@ use Gc\Registry;
 use Gc\View\Renderer;
 use Zend\EventManager\Event;
 use Gc\Event\StaticEventManager;
+use Zend\Db\TableGateway\Feature\GlobalAdapterFeature;
 
 /**
  * Abstract obverser bootstrap
@@ -49,6 +50,23 @@ abstract class AbstractObserver
     protected $renderer;
 
     /**
+     * Configuration
+     *
+     * @var array
+     */
+    protected $config;
+
+    /**
+     * Constructor
+     *
+     * @param array $config Configuration
+     */
+    public function __construct($config)
+    {
+        $this->config = $config;
+    }
+
+    /**
      * Initialize observer
      *
      * @return void
@@ -62,7 +80,7 @@ abstract class AbstractObserver
      */
     protected function getAdapter()
     {
-        return Registry::get('Db');
+        return GlobalAdapterFeature::getStaticAdapter();
     }
 
     /**
@@ -72,8 +90,11 @@ abstract class AbstractObserver
      */
     protected function getDriverName()
     {
-         $configuration = Registry::get('Application')->getConfig();
-         return $configuration['db']['driver'];
+        if (!isset($this->config['db']['driver'])) {
+            return false;
+        }
+
+         return $this->config['db']['driver'];
     }
 
     /**

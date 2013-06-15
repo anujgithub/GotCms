@@ -146,6 +146,7 @@ class IndexController extends Action
         $action = $this->getMethodFromAction($actionName);
 
         $controllerObject = new $controllerClass($this->getRequest(), $this->getResponse());
+        $controllerObject->setServiceLocator($this->getServiceLocator());
         $controllerObject->setEvent($this->getEvent());
         if (!method_exists($controllerObject, $action)) {
             return false;
@@ -185,6 +186,6 @@ class IndexController extends Action
     protected function loadBootstrap($moduleName)
     {
         $className = sprintf('\\Modules\\%s\\Bootstrap', $moduleName, $moduleName);
-        return new $className();
+        return new $className($this->getServiceLocator()->get('Config'));
     }
 }

@@ -29,6 +29,7 @@ namespace Gc\Module;
 
 use Zend\EventManager\Event;
 use Gc\Registry;
+use Zend\Db\TableGateway\Feature\GlobalAdapterFeature;
 
 /**
  * Abstract module bootstrap
@@ -39,6 +40,23 @@ use Gc\Registry;
  */
 abstract class AbstractModule
 {
+    /**
+     * Configuration
+     *
+     * @var array
+     */
+    protected $config;
+
+    /**
+     * Constructor
+     *
+     * @param array $config Configuration
+     */
+    public function __construct($config)
+    {
+        $this->config = $config;
+    }
+
     /**
      * Execute on bootstrap
      *
@@ -68,7 +86,7 @@ abstract class AbstractModule
      */
     protected function getAdapter()
     {
-        return Registry::get('Db');
+        return GlobalAdapterFeature::getStaticAdapter();
     }
 
     /**
@@ -78,7 +96,10 @@ abstract class AbstractModule
      */
     protected function getDriverName()
     {
-         $configuration = Registry::get('Application')->getConfig();
-         return $configuration['db']['driver'];
+        if (!isset($this->config['db']['driver'])) {
+            return false;
+        }
+
+         return $this->config['db']['driver'];
     }
 }

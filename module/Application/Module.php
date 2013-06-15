@@ -83,7 +83,7 @@ class Module extends Mvc\Module
             $dbAdapter = $this->initDatabase($config);
             $this->initSession($serviceManager, $dbAdapter);
             $this->initTranslator($serviceManager);
-            $this->initObserverModules();
+            $this->initObserverModules($config);
 
             $sharedEvents = $application->getEventManager()->getSharedManager();
             $sharedEvents->attach('Zend\Mvc\Application', MvcEvent::EVENT_ROUTE, array($this, 'checkSsl'), -10);
@@ -178,7 +178,7 @@ class Module extends Mvc\Module
      *
      * @return void
      */
-    public function initObserverModules()
+    public function initObserverModules($config)
     {
         //Initialize Observers
         $moduleCollection = new ModuleCollection();
@@ -186,7 +186,7 @@ class Module extends Mvc\Module
         foreach ($modules as $module) {
             $className = sprintf('\\Modules\\%s\\Observer', $module->getName());
             if (class_exists($className)) {
-                $object = new $className();
+                $object = new $className($config);
                 $object->init();
             }
         }
