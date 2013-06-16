@@ -62,15 +62,6 @@ class ScriptTest extends \PHPUnit_Framework_TestCase
      */
     protected function setUp()
     {
-        $this->script = ScriptModel::fromArray(
-            array(
-                'name' => 'Script name',
-                'identifier' => 'script-identifier',
-                'description' => 'Script description',
-                'content' => 'script Content',
-            )
-        );
-        $this->script->save();
         $this->object = new Script;
     }
 
@@ -83,8 +74,6 @@ class ScriptTest extends \PHPUnit_Framework_TestCase
     protected function tearDown()
     {
         unset($this->object);
-        $this->script->delete();
-        unset($this->script);
     }
 
     /**

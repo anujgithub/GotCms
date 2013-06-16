@@ -127,23 +127,6 @@ class DocumentTypeControllerTest extends AbstractHttpControllerTestCase
      */
     public function testCreateActionWithPostData()
     {
-        $viewModel = ViewModel::fromArray(
-            array(
-                'name' => 'Test',
-                'identifier' => 'Test',
-                'content' => 'Test',
-            )
-        );
-        $viewModel->save();
-
-        $datatypeModel = DatatypeModel::fromArray(
-            array(
-                'name' => 'DatatypeTest',
-                'model' => 'Textstring'
-            )
-        );
-        $datatypeModel->save();
-
         $this->dispatch(
             '/admin/development/document-type/create',
             'POST',
@@ -153,18 +136,18 @@ class DocumentTypeControllerTest extends AbstractHttpControllerTestCase
                     'name' => 'test'
                 ),
                 'views' => array(
-                    'default_view' => $viewModel->getId()
+                    'default_view' => 1
                 ),
                 'properties' => array(
                     'property1'=> array(
-                        'datatype' => $datatypeModel->getId(),
+                        'datatype' => 1,
                         'identifier' => 'test',
                         'description' => 'test',
                         'name' => 'test',
                         'tab' => 21
                     ),
                     'wrongId'=> array(
-                        'datatype' => $datatypeModel->getId(),
+                        'datatype' => 1,
                         'identifier' => 'test',
                         'description' => 'test',
                         'name' => 'test',
@@ -189,9 +172,6 @@ class DocumentTypeControllerTest extends AbstractHttpControllerTestCase
         $this->assertControllerName('DocumentTypeController');
         $this->assertControllerClass('DocumentTypeController');
         $this->assertMatchedRouteName('development/document-type/create');
-
-        $viewModel->delete();
-        $datatypeModel->delete();
     }
 
     /**
@@ -203,54 +183,7 @@ class DocumentTypeControllerTest extends AbstractHttpControllerTestCase
      */
     public function testEditAction()
     {
-        $viewModel = ViewModel::fromArray(
-            array(
-                'name' => 'Test',
-                'identifier' => 'Test',
-                'content' => 'Test',
-            )
-        );
-        $viewModel->save();
-
-        $datatypeModel = DatatypeModel::fromArray(
-            array(
-                'name' => 'DatatypeTest',
-                'model' => 'Textstring'
-            )
-        );
-        $datatypeModel->save();
-
-        $documentTypeModel = DocumentTypeModel::fromArray(
-            array(
-                'name' => 'TestDocumentType',
-                'icon_id' => 3,
-                'default_view_id' => $viewModel->getId(),
-                'user_id' => $this->user->getId()
-            )
-        );
-        $documentTypeModel->save();
-
-        $tabModel = TabModel::fromArray(
-            array(
-                'name' => 'test',
-                'description' => 'test',
-                'document_type_id' => $documentTypeModel->getId(),
-            )
-        );
-        $tabModel->save();
-
-        $propertyModel = PropertyModel::fromArray(
-            array(
-                'name' => 'test',
-                'identifier' => 'test',
-                'description'=> 'test',
-                'tab_id' => $tabModel->getId(),
-                'datatype_id' => $datatypeModel->getId(),
-            )
-        );
-        $propertyModel->save();
-
-        $this->dispatch('/admin/development/document-type/edit/' . $documentTypeModel->getId());
+        $this->dispatch('/admin/development/document-type/edit/' . 1);
         $this->assertResponseStatusCode(200);
 
         $this->assertModuleName('Development');
@@ -274,55 +207,8 @@ class DocumentTypeControllerTest extends AbstractHttpControllerTestCase
      */
     public function testEditActionWithPostData()
     {
-        $viewModel = ViewModel::fromArray(
-            array(
-                'name' => 'Test',
-                'identifier' => 'Test',
-                'content' => 'Test',
-            )
-        );
-        $viewModel->save();
-
-        $datatypeModel = DatatypeModel::fromArray(
-            array(
-                'name' => 'DatatypeTest',
-                'model' => 'Textstring'
-            )
-        );
-        $datatypeModel->save();
-
-        $documentTypeModel = DocumentTypeModel::fromArray(
-            array(
-                'name' => 'TestDocumentType',
-                'icon_id' => 3,
-                'default_view_id' => $viewModel->getId(),
-                'user_id' => $this->user->getId()
-            )
-        );
-        $documentTypeModel->save();
-
-        $tabModel = TabModel::fromArray(
-            array(
-                'name' => 'test',
-                'description' => 'test',
-                'document_type_id' => $documentTypeModel->getId(),
-            )
-        );
-        $tabModel->save();
-
-        $propertyModel = PropertyModel::fromArray(
-            array(
-                'name' => 'test',
-                'identifier' => 'test',
-                'description'=> 'test',
-                'tab_id' => $tabModel->getId(),
-                'datatype_id' => $datatypeModel->getId(),
-            )
-        );
-        $propertyModel->save();
-
         $this->dispatch(
-            '/admin/development/document-type/edit/' . $documentTypeModel->getId(),
+            '/admin/development/document-type/edit/' . 1,
             'POST',
             array(
                 'infos' => array(
@@ -330,18 +216,18 @@ class DocumentTypeControllerTest extends AbstractHttpControllerTestCase
                     'name' => 'TestDocumentType'
                 ),
                 'views' => array(
-                    'default_view' => $viewModel->getId()
+                    'default_view' => 1
                 ),
                 'properties' => array(
                     'property1'=> array(
-                        'datatype' => $datatypeModel->getId(),
+                        'datatype' => 1,
                         'identifier' => 'test',
                         'description' => 'test',
                         'name' => 'test',
                         'tab' => 21
                     ),
                     'wrongId'=> array(
-                        'datatype' => $datatypeModel->getId(),
+                        'datatype' => 1,
                         'identifier' => 'test',
                         'description' => 'test',
                         'name' => 'test',
@@ -366,12 +252,6 @@ class DocumentTypeControllerTest extends AbstractHttpControllerTestCase
         $this->assertControllerName('DocumentTypeController');
         $this->assertControllerClass('DocumentTypeController');
         $this->assertMatchedRouteName('development/document-type/edit');
-
-        $documentTypeModel->delete();
-        $propertyModel->delete();
-        $tabModel->delete();
-        $viewModel->delete();
-        $datatypeModel->delete();
     }
 
     /**
@@ -383,27 +263,8 @@ class DocumentTypeControllerTest extends AbstractHttpControllerTestCase
      */
     public function testEditActionWithInvalidPostData()
     {
-        $viewModel = ViewModel::fromArray(
-            array(
-                'name' => 'Test',
-                'identifier' => 'Test',
-                'content' => 'Test',
-            )
-        );
-        $viewModel->save();
-
-        $documentTypeModel = DocumentTypeModel::fromArray(
-            array(
-                'name' => 'TestDocumentType',
-                'icon_id' => 3,
-                'default_view_id' => $viewModel->getId(),
-                'user_id' => $this->user->getId()
-            )
-        );
-        $documentTypeModel->save();
-
         $this->dispatch(
-            '/admin/development/document-type/edit/' . $documentTypeModel->getId(),
+            '/admin/development/document-type/edit/' . 1,
             'POST',
             array(
             )
@@ -414,9 +275,6 @@ class DocumentTypeControllerTest extends AbstractHttpControllerTestCase
         $this->assertControllerName('DocumentTypeController');
         $this->assertControllerClass('DocumentTypeController');
         $this->assertMatchedRouteName('development/document-type/edit');
-
-        $documentTypeModel->delete();
-        $viewModel->delete();
     }
 
     /**
@@ -446,35 +304,13 @@ class DocumentTypeControllerTest extends AbstractHttpControllerTestCase
      */
     public function testDeleteAction()
     {
-        $viewModel = ViewModel::fromArray(
-            array(
-                'name' => 'Test',
-                'identifier' => 'Test',
-                'content' => 'Test',
-            )
-        );
-        $viewModel->save();
-
-        $documentTypeModel = DocumentTypeModel::fromArray(
-            array(
-                'name' => 'TestDocumentType',
-                'icon_id' => 3,
-                'default_view_id' => $viewModel->getId(),
-                'user_id' => $this->user->getId()
-            )
-        );
-        $documentTypeModel->save();
-
-        $this->dispatch('/admin/development/document-type/delete/' . $documentTypeModel->getId());
+        $this->dispatch('/admin/development/document-type/delete/' . 1);
         $this->assertResponseStatusCode(200);
 
         $this->assertModuleName('Development');
         $this->assertControllerName('DocumentTypeController');
         $this->assertControllerClass('DocumentTypeController');
         $this->assertMatchedRouteName('development/document-type/delete');
-
-        $documentTypeModel->delete();
-        $viewModel->delete();
     }
 
     /**

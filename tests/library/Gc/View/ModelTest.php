@@ -109,18 +109,7 @@ class ModelTest extends \PHPUnit_Framework_TestCase
      */
     public function testFromId()
     {
-        $array = array(
-            'name' => 'String',
-            'identifier' => 'string',
-            'description' => 'Description',
-            'content' => 'Content',
-        );
-        $model = $this->object->fromArray($array);
-        $model->save();
-        $id = $model->getId();
-
-        $model = $this->object->fromId($id);
-        $this->assertEquals('string', $model->getIdentifier());
+        $this->assertEquals('string', $this->object->fromId(1));
     }
 
     /**
@@ -132,8 +121,7 @@ class ModelTest extends \PHPUnit_Framework_TestCase
      */
     public function testFromFakeId()
     {
-        $model = $this->object->fromId(10000);
-        $this->assertFalse($model);
+        $this->assertFalse($this->object->fromId(10000));
     }
 
     /**
@@ -145,17 +133,7 @@ class ModelTest extends \PHPUnit_Framework_TestCase
      */
     public function testFromIdentifier()
     {
-        $array = array(
-            'name' => 'Test Identifier',
-            'identifier' => 'test-identifier',
-            'description' => 'Description',
-            'content' => 'Content',
-        );
-        $model = $this->object->fromArray($array);
-        $model->save();
-
-        $model = $this->object->fromIdentifier('test-identifier');
-        $this->assertEquals('Test Identifier', $model->getName());
+        $this->assertEquals('Test Identifier', $this->object->fromIdentifier(10000));
     }
 
     /**
@@ -231,7 +209,6 @@ class ModelTest extends \PHPUnit_Framework_TestCase
             'content' => 'Content',
         );
         $model = $this->object->fromArray($array);
-        $model->save();
 
         $this->assertTrue($model->delete());
     }

@@ -19,52 +19,25 @@
  *
  * @category   Gc
  * @package    Library
- * @subpackage Test\PHPUnit\Controller
+ * @subpackage Db
  * @author     Pierre Rambaud (GoT) <pierre.rambaud86@gmail.com>
  * @license    GNU/LGPL http://www.gnu.org/licenses/lgpl-3.0.html
  * @link       http://www.got-cms.com
  */
 
-namespace Gc\Test\PHPUnit\Controller;
-
-use Gc\User\Model as UserModel;
-use Zend\Test\PHPUnit\Controller\AbstractHttpControllerTestCase as ZendAbstractHttpControllerTestCase;
 
 /**
- * Exception is the base class for all Exceptions.
+ * Extension of Zend\Db\TableGateway
+ * This is better to use fetchRow(), fetchAll(),
+ * execute() and add generic methods.
  *
  * @category   Gc
  * @package    Library
- * @subpackage Test\PHPUnit\Controller
+ * @subpackage Db
  */
-class AbstractHttpControllerTestCase extends ZendAbstractHttpControllerTestCase
+class PDOMock extends \PDO
 {
-    /**
-     * User model
-     *
-     * @var Gc\User\Model
-     */
-    protected $user;
-
-    /**
-     * Initialize test
-     *
-     * @return void
-     */
-    public function init()
-    {
-        parent::setUp();
-        $this->setApplicationConfig(
-            include GC_APPLICATION_PATH . '/config/application.config.php'
-        );
-    }
-
-    /**
-     * Tear down
-     *
-     * @return void
-     */
-    public function tearDown()
+    public function __construct()
     {
     }
 }

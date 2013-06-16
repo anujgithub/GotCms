@@ -53,17 +53,6 @@ class CollectionTest extends \PHPUnit_Framework_TestCase
     protected function setUp()
     {
         $this->object = new Collection;
-
-        $model = Model::fromArray(
-            array(
-                'name' => 'name-collection-test',
-                'identifier' => 'identifier-collection-test',
-                'description' => 'description-collection-test',
-                'content' => 'content-collection-test'
-            )
-        );
-
-        $model->save();
     }
 
     /**
@@ -74,8 +63,6 @@ class CollectionTest extends \PHPUnit_Framework_TestCase
      */
     protected function tearDown()
     {
-        $model = Model::fromIdentifier('identifier-collection-test');
-        $model->delete();
         unset($this->object);
     }
 

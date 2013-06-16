@@ -26,8 +26,6 @@
 
 namespace Gc\Db;
 
-use Gc\User\Model;
-use Gc\User\Collection;
 use Zend\Db\Sql\Select;
 
 /**
@@ -56,25 +54,7 @@ class AbstractTableTest extends \PHPUnit_Framework_TestCase
      */
     protected function setUp()
     {
-        $collection = new Collection();
-        foreach ($collection->getUsers() as $user) {
-            $user->delete();
-        }
-
-        unset($collection);
-
-        $this->object = Model::fromArray(
-            array(
-                'lastname' => 'Test',
-                'firstname' => 'Test',
-                'email' => 'pierre.rambaud86@gmail.com',
-                'login' => 'test',
-                'user_acl_role_id' => 1,
-            )
-        );
-
-        $this->object->setPassword('test');
-        $this->object->save();
+        $this->object = $this->getMockForAbstractClass('Gc\Db\AbstractTable');
     }
 
     /**
@@ -85,7 +65,6 @@ class AbstractTableTest extends \PHPUnit_Framework_TestCase
      */
     protected function tearDown()
     {
-        $this->object->delete();
         unset($this->object);
     }
 

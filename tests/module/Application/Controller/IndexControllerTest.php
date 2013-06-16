@@ -49,31 +49,6 @@ use Zend\Authentication\Storage;
 class IndexControllerTest extends AbstractHttpControllerTestCase
 {
     /**
-     * @var ViewModel
-     */
-    protected $view;
-
-    /**
-     * @var DocumentTypeModel
-     */
-    protected $documentType;
-
-    /**
-     * @var DatatypeModel
-     */
-    protected $datatype;
-
-    /**
-     * @var TabModel
-     */
-    protected $tabModel;
-
-    /**
-     * @var PropertyModel
-     */
-    protected $property;
-
-    /**
      * Sets up the fixture, for example, opens a network connection.
      * This method is called before a test is executed.
      *
@@ -82,68 +57,6 @@ class IndexControllerTest extends AbstractHttpControllerTestCase
     public function setUp()
     {
         $this->init();
-
-        $this->view = ViewModel::fromArray(
-            array(
-                'name' => 'View',
-                'identifier' => 'ViewIdentifier',
-                'description' => 'Description',
-                'content' => '',
-            )
-        );
-        $this->view->save();
-
-        $this->layout = LayoutModel::fromArray(
-            array(
-                'name' => 'View',
-                'identifier' => 'ViewIdentifier',
-                'description' => 'Description',
-                'content' => '',
-            )
-        );
-        $this->layout->save();
-
-        $this->documentType = DocumentTypeModel::fromArray(
-            array(
-                'name' => 'DocumentType',
-                'description' => 'description',
-                'icon_id' => 1,
-                'default_view_id' => $this->view->getId(),
-                'user_id' => $this->user->getId(),
-            )
-        );
-        $this->documentType->save();
-        $this->documentType->setDependencies(array($this->documentType->getId()));
-        $this->documentType->save();
-
-        $this->datatype = DatatypeModel::fromArray(
-            array(
-                'name' => 'DatatypeTest',
-                'model' => 'Textstring'
-            )
-        );
-        $this->datatype->save();
-
-        $this->tabModel = TabModel::fromArray(
-            array(
-                'name' => 'test',
-                'description' => 'test',
-                'document_type_id' => $this->documentType->getId(),
-            )
-        );
-        $this->tabModel->save();
-
-        $this->property = PropertyModel::fromArray(
-            array(
-                'name' => 'test',
-                'identifier' => 'test',
-                'description'=> 'test',
-                'tab_id' => $this->tabModel->getId(),
-                'datatype_id' => $this->datatype->getId(),
-                'is_required' => true
-            )
-        );
-        $this->property->save();
     }
 
     /**
@@ -154,20 +67,6 @@ class IndexControllerTest extends AbstractHttpControllerTestCase
      */
     public function tearDown()
     {
-        $this->documentType->delete();
-        $this->property->delete();
-        $this->tabModel->delete();
-        $this->view->delete();
-        $this->layout->delete();
-        $this->user->delete();
-        $this->datatype->delete();
-        unset($this->documentType);
-        unset($this->property);
-        unset($this->tabModel);
-        unset($this->view);
-        unset($this->layout);
-        unset($this->user);
-        unset($this->datatype);
     }
 
     /**
@@ -184,34 +83,13 @@ class IndexControllerTest extends AbstractHttpControllerTestCase
      */
     public function testIndexAction()
     {
-        $document = DocumentModel::fromArray(
-            array(
-                'name' => 'test',
-                'url_key' => '',
-                'status' => DocumentModel::STATUS_ENABLE,
-                'user_id' => $this->user->getId(),
-                'document_type_id' => $this->documentType->getId(),
-                'view_id' => $this->view->getId(),
-                'layout_id' => $this->layout->getId(),
-                'parent_id' => null,
-            )
-        );
-        $document->save();
-        $this->property->setDocumentId($document->getId());
-        $this->property->setValue('string');
-        $this->property->saveValue();
-
-
-        $this->dispatch('/' . $document->getUrl());
+        $this->dispatch('/test');
         $this->assertResponseStatusCode(200);
 
         $this->assertModuleName('Application');
         $this->assertControllerName('IndexController');
         $this->assertControllerClass('IndexController');
         $this->assertMatchedRouteName('cms');
-
-        $document->delete();
-        unset($document);
     }
 
     /**
@@ -228,34 +106,13 @@ class IndexControllerTest extends AbstractHttpControllerTestCase
      */
     public function testIndexActionWithUrlKey()
     {
-        $document = DocumentModel::fromArray(
-            array(
-                'name' => 'test',
-                'url_key' => 'test',
-                'status' => DocumentModel::STATUS_ENABLE,
-                'user_id' => $this->user->getId(),
-                'document_type_id' => $this->documentType->getId(),
-                'view_id' => $this->view->getId(),
-                'layout_id' => $this->layout->getId(),
-                'parent_id' => null,
-            )
-        );
-        $document->save();
-        $this->property->setDocumentId($document->getId());
-        $this->property->setValue('s:6:"string";');
-        $this->property->saveValue();
-
-
-        $this->dispatch($document->getUrl() . '/');
+        $this->dispatch('/test/test');
         $this->assertResponseStatusCode(200);
 
         $this->assertModuleName('Application');
         $this->assertControllerName('IndexController');
         $this->assertControllerClass('IndexController');
         $this->assertMatchedRouteName('cms');
-
-        $document->delete();
-        unset($document);
     }
 
     /**
@@ -272,36 +129,13 @@ class IndexControllerTest extends AbstractHttpControllerTestCase
      */
     public function testIndexActionWithCache()
     {
-        $enableCache = CoreConfig::setValue('cache_is_active', 1);
-        $enableCache = CoreConfig::setValue('cache_handler', 'filesystem');
-        $document    = DocumentModel::fromArray(
-            array(
-                'name' => 'test',
-                'url_key' => 'test',
-                'status' => DocumentModel::STATUS_ENABLE,
-                'user_id' => $this->user->getId(),
-                'document_type_id' => $this->documentType->getId(),
-                'view_id' => $this->view->getId(),
-                'layout_id' => $this->layout->getId(),
-                'parent_id' => null,
-            )
-        );
-        $document->save();
-        $this->property->setDocumentId($document->getId());
-        $this->property->setValue('string');
-        $this->property->saveValue();
-
-
-        $this->dispatch($document->getUrl());
+        $this->dispatch('/test');
         $this->assertResponseStatusCode(200);
 
         $this->assertModuleName('Application');
         $this->assertControllerName('IndexController');
         $this->assertControllerClass('IndexController');
         $this->assertMatchedRouteName('cms');
-
-        $document->delete();
-        unset($document);
     }
 
     /**
@@ -318,34 +152,13 @@ class IndexControllerTest extends AbstractHttpControllerTestCase
      */
     public function testIndexActionWithExistingCache()
     {
-        $enableCache = CoreConfig::setValue('cache_is_active', 1);
-        $enableCache = CoreConfig::setValue('cache_handler', 'filesystem');
-        $document    = DocumentModel::fromArray(
-            array(
-                'name' => 'test',
-                'url_key' => 'test',
-                'status' => DocumentModel::STATUS_ENABLE,
-                'user_id' => $this->user->getId(),
-                'document_type_id' => $this->documentType->getId(),
-                'view_id' => $this->view->getId(),
-                'layout_id' => $this->layout->getId(),
-                'parent_id' => null,
-            )
-        );
-        $document->save();
-
-
-        $this->dispatch($document->getUrl());
+        $this->dispatch('/test');
         $this->assertResponseStatusCode(200);
 
         $this->assertModuleName('Application');
         $this->assertControllerName('IndexController');
         $this->assertControllerClass('IndexController');
         $this->assertMatchedRouteName('cms');
-
-        $document->delete();
-        unset($document);
-        $enableCache = CoreConfig::setValue('cache_is_active', 0);
     }
 
     /**
@@ -362,34 +175,13 @@ class IndexControllerTest extends AbstractHttpControllerTestCase
      */
     public function testIndexActionWithUrlKeyWithPreview()
     {
-        $auth = new AuthenticationService(new Storage\Session(UserModel::BACKEND_AUTH_NAMESPACE));
-        $auth->clearIdentity();
-        $document = DocumentModel::fromArray(
-            array(
-                'name' => 'test',
-                'url_key' => 'test',
-                'status' => DocumentModel::STATUS_ENABLE,
-                'user_id' => $this->user->getId(),
-                'document_type_id' => $this->documentType->getId(),
-                'view_id' => $this->view->getId(),
-                'layout_id' => $this->layout->getId(),
-                'parent_id' => null,
-            )
-        );
-        $document->save();
-
-
-        $this->dispatch($document->getUrl() . '?preview');
+        $this->dispatch('/test?preview');
         $this->assertResponseStatusCode(200);
 
         $this->assertModuleName('Application');
         $this->assertControllerName('IndexController');
         $this->assertControllerClass('IndexController');
         $this->assertMatchedRouteName('cms');
-
-        $document->delete();
-        unset($document);
-        $enableCache = CoreConfig::setValue('cache_is_active', 0);
     }
 
     /**
@@ -429,8 +221,6 @@ class IndexControllerTest extends AbstractHttpControllerTestCase
      */
     public function testIndexActionWith404PageAndNotEmptyContent()
     {
-        CoreConfig::setValue('site_404_layout', $this->layout->getId());
-        $this->layout->setContent('test');
         $this->dispatch('/404Page');
         $this->assertResponseStatusCode(404);
 

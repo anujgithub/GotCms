@@ -68,7 +68,6 @@ class ModelTest extends \PHPUnit_Framework_TestCase
                 'model' => 'Textstring',
             )
         );
-        $this->object->save();
     }
 
     /**
@@ -79,7 +78,6 @@ class ModelTest extends \PHPUnit_Framework_TestCase
      */
     protected function tearDown()
     {
-        $this->object->delete();
         unset($this->object);
     }
 
@@ -154,7 +152,6 @@ class ModelTest extends \PHPUnit_Framework_TestCase
         $this->assertInternalType('integer', (int) $model->save());
         //Test update
         $this->assertInternalType('integer', (int) $model->save());
-        $model->delete();
     }
 
     /**
@@ -243,80 +240,11 @@ class ModelTest extends \PHPUnit_Framework_TestCase
      */
     public function testSaveEditor()
     {
-        $viewModel = ViewModel::fromArray(
-            array(
-                'name' => 'View Name',
-                'identifier' => 'View identifier',
-                'description' => 'View Description',
-                'content' => 'View Content'
-            )
-        );
-        $viewModel->save();
-
-        $layoutModel = LayoutModel::fromArray(
-            array(
-                'name' => 'Layout Name',
-                'identifier' => 'Layout identifier',
-                'description' => 'Layout Description',
-                'content' => 'Layout Content'
-            )
-        );
-        $layoutModel->save();
-
-        $userModel = UserModel::fromArray(
-            array(
-                'lastname' => 'User test',
-                'firstname' => 'User test',
-                'email' => 'pierre.rambaud86@gmail.com',
-                'login' => 'test',
-                'user_acl_role_id' => 1,
-            )
-        );
-        $userModel->setPassword('test');
-        $userModel->save();
-
-        $documentTypeModel = DocumentTypeModel::fromArray(
-            array(
-                'name' => 'Document Type Name',
-                'description' => 'Document Type description',
-                'icon_id' => 1,
-                'defaultview_id' => $viewModel->getId(),
-                'user_id' => $userModel->getId(),
-            )
-        );
-        $documentTypeModel->save();
-
-        $tabModel = TabModel::fromArray(
-            array(
-                'name' => 'TabTest',
-                'description' => 'TabTest',
-                'sort_order' => 1,
-                'document_type_id' => $documentTypeModel->getId(),
-            )
-        );
-        $tabModel->save();
-
-        $documentModel = DocumentModel::fromArray(
-            array(
-                'name' => 'DocumentTest',
-                'url_key' => 'document-test',
-                'status' => DocumentModel::STATUS_ENABLE,
-                'sort_order' => 1,
-                'show_in_nav' => true,
-                'user_id' => $userModel->getId(),
-                'document_type_id' => $documentTypeModel->getId(),
-                'view_id' => $viewModel->getId(),
-                'layout_id' => $layoutModel->getId(),
-                'parent_id' => 0,
-            )
-        );
-        $documentModel->save();
-
         $propertyModel = PropertyModel::fromArray(
             array(
-                'datatype_id' => $this->object->getId(),
-                'document_id' => $documentModel->getId(),
-                'tab_id' => $tabModel->getId(),
+                'datatype_id' => 1,
+                'document_id' => 1,
+                'tab_id' => 1,
                 'name' => 'PropertyTest',
                 'identifier' => 'PropertyTest',
                 'description' => 'PropertyTest',
@@ -324,18 +252,10 @@ class ModelTest extends \PHPUnit_Framework_TestCase
                 'sort_order' => 1,
             )
         );
-        $propertyModel->save();
 
         $this->assertFalse(Model::saveEditor($propertyModel));
         $propertyModel->isRequired(false);
         $this->assertTrue(Model::saveEditor($propertyModel));
-
-        $propertyModel->delete();
-        $documentModel->delete();
-        $tabModel->delete();
-        $documentTypeModel->delete();
-        $viewModel->delete();
-        $layoutModel->delete();
     }
 
     /**

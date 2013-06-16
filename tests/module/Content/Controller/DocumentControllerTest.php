@@ -47,36 +47,6 @@ use Zend\Session\Container as SessionContainer;
 class DocumentControllerTest extends AbstractHttpControllerTestCase
 {
     /**
-     * @var ViewModel
-     */
-    protected $view;
-
-    /**
-     * @var DocumentTypeModel
-     */
-    protected $documentType;
-
-    /**
-     * @var DatatypeModel
-     */
-    protected $datatype;
-
-    /**
-     * @var TabModel
-     */
-    protected $tabModel;
-
-    /**
-     * @var PropertyModel
-     */
-    protected $property;
-
-    /**
-     * @var DocumentModel
-     */
-    protected $document;
-
-    /**
      * Sets up the fixture, for example, opens a network connection.
      * This method is called before a test is executed.
      *
@@ -85,82 +55,6 @@ class DocumentControllerTest extends AbstractHttpControllerTestCase
     public function setUp()
     {
         $this->init();
-
-        $this->view = ViewModel::fromArray(
-            array(
-                'name' => 'View',
-                'identifier' => 'ViewIdentifier',
-                'description' => 'Description',
-                'content' => '',
-            )
-        );
-        $this->view->save();
-
-        $this->layout = LayoutModel::fromArray(
-            array(
-                'name' => 'View',
-                'identifier' => 'ViewIdentifier',
-                'description' => 'Description',
-                'content' => '',
-            )
-        );
-        $this->layout->save();
-
-        $this->documentType = DocumentTypeModel::fromArray(
-            array(
-                'name' => 'DocumentType',
-                'description' => 'description',
-                'icon_id' => 1,
-                'default_view_id' => $this->view->getId(),
-                'user_id' => $this->user->getId(),
-            )
-        );
-        $this->documentType->save();
-        $this->documentType->setDependencies(array($this->documentType->getId()));
-        $this->documentType->save();
-
-        $this->datatype = DatatypeModel::fromArray(
-            array(
-                'name' => 'DatatypeTest',
-                'model' => 'Textstring'
-            )
-        );
-        $this->datatype->save();
-
-        $this->tabModel = TabModel::fromArray(
-            array(
-                'name' => 'test',
-                'description' => 'test',
-                'document_type_id' => $this->documentType->getId(),
-            )
-        );
-        $this->tabModel->save();
-
-        $this->property = PropertyModel::fromArray(
-            array(
-                'name' => 'test',
-                'identifier' => 'test',
-                'description'=> 'test',
-                'tab_id' => $this->tabModel->getId(),
-                'datatype_id' => $this->datatype->getId(),
-                'is_required' => true
-            )
-        );
-        $this->property->save();
-
-        $this->document = DocumentModel::fromArray(
-            array(
-                'name' => 'test',
-                'url_key' => '',
-                'status' => DocumentModel::STATUS_ENABLE,
-                'user_id' => $this->user->getId(),
-                'document_type_id' => $this->documentType->getId(),
-                'view_id' => $this->view->getId(),
-                'layout_id' => $this->layout->getId(),
-                'parent_id' => null,
-            )
-        );
-        $this->document->save();
     }
 
     /**
@@ -171,22 +65,6 @@ class DocumentControllerTest extends AbstractHttpControllerTestCase
      */
     public function tearDown()
     {
-        $this->document->delete();
-        $this->documentType->delete();
-        $this->property->delete();
-        $this->tabModel->delete();
-        $this->view->delete();
-        $this->layout->delete();
-        $this->user->delete();
-        $this->datatype->delete();
-        unset($this->documentType);
-        unset($this->document);
-        unset($this->property);
-        unset($this->tabModel);
-        unset($this->view);
-        unset($this->layout);
-        unset($this->user);
-        unset($this->datatype);
     }
 
     /**
@@ -226,7 +104,7 @@ class DocumentControllerTest extends AbstractHttpControllerTestCase
             array(
                 'document-name' => 'test',
                 'document-url_key' => '',
-                'document_type' => $this->documentType->getId(),
+                'document_type' => 1,
             )
         );
         $this->assertResponseStatusCode(302);
@@ -278,16 +156,16 @@ class DocumentControllerTest extends AbstractHttpControllerTestCase
                 'name' => 'test',
                 'url_key' => '',
                 'status' => DocumentModel::STATUS_ENABLE,
-                'user_id' => $this->user->getId(),
-                'document_type_id' => $this->documentType->getId(),
-                'view_id' => $this->view->getId(),
-                'layout_id' => $this->layout->getId(),
+                'user_id' => 1,
+                'document_type_id' => 1,
+                'view_id' => 1,
+                'layout_id' => 1,
                 'parent_id' => null,
             )
         );
         $document->save();
 
-        $this->dispatch('/admin/content/document/create/parent/' . $document->getId());
+        $this->dispatch('/admin/content/document/create/parent/' . 1);
         $this->assertResponseStatusCode(200);
 
         $this->assertModuleName('Content');
@@ -376,8 +254,8 @@ class DocumentControllerTest extends AbstractHttpControllerTestCase
                 'document-name' => 'test',
                 'document-show_in_nav' => true,
                 'document-url_key' => 'test',
-                'document-view' => $this->view->getId(),
-                'document-layout' => $this->layout->getId(),
+                'document-view' => 1,
+                'document-layout' => 1,
             )
         );
         $this->assertResponseStatusCode(302);
@@ -601,10 +479,10 @@ class DocumentControllerTest extends AbstractHttpControllerTestCase
                 'name' => 'test',
                 'url_key' => 'about',
                 'status' => DocumentModel::STATUS_ENABLE,
-                'user_id' => $this->user->getId(),
-                'document_type_id' => $this->documentType->getId(),
-                'view_id' => $this->view->getId(),
-                'layout_id' => $this->layout->getId(),
+                'user_id' => 1,
+                'document_type_id' => 1,
+                'view_id' => 1,
+                'layout_id' => 1,
                 'parent_id' => null,
             )
         );
@@ -616,7 +494,7 @@ class DocumentControllerTest extends AbstractHttpControllerTestCase
             $this->document->getId()
         );
 
-        $this->dispatch('/admin/content/document/paste/' . $document->getId() . '?name=new-name&url_key=testing');
+        $this->dispatch('/admin/content/document/paste/' . 1 . '?name=new-name&url_key=testing');
         $this->assertResponseStatusCode(200);
 
         $this->assertModuleName('Content');
@@ -641,10 +519,10 @@ class DocumentControllerTest extends AbstractHttpControllerTestCase
                 'name' => 'test',
                 'url_key' => 'about',
                 'status' => DocumentModel::STATUS_ENABLE,
-                'user_id' => $this->user->getId(),
-                'document_type_id' => $this->documentType->getId(),
-                'view_id' => $this->view->getId(),
-                'layout_id' => $this->layout->getId(),
+                'user_id' => 1,
+                'document_type_id' => 1,
+                'view_id' => 1,
+                'layout_id' => 1,
                 'parent_id' => null,
             )
         );
@@ -656,7 +534,7 @@ class DocumentControllerTest extends AbstractHttpControllerTestCase
             $this->document->getId()
         );
 
-        $this->dispatch('/admin/content/document/paste/' . $document->getId());
+        $this->dispatch('/admin/content/document/paste/' . 1);
         $this->assertResponseStatusCode(200);
 
         $this->assertModuleName('Content');

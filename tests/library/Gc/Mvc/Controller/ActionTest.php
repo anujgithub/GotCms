@@ -162,28 +162,11 @@ class ActionTest extends \PHPUnit_Framework_TestCase
      */
     public function testOnDispatchWithIdentity()
     {
-        $userModel = UserModel::fromArray(
-            array(
-                'lastname' => 'Test',
-                'firstname' => 'Test',
-                'email' => 'pierre.rambaud86@gmail.com',
-                'login' => 'login-test',
-                'user_acl_role_id' => 1,
-            )
-        );
-
-        $userModel->setPassword('password-test');
-        $userModel->save();
-        $userModel->authenticate('login-test', 'password-test');
-
-
         $routeMatch = new RouteMatch(array());
         $routeMatch->setMatchedRouteName('cms');
         $this->object->getEvent()->setRouteMatch($routeMatch);
         $this->object->dispatch(Registry::get('Application')->getRequest(), null);
         $this->object->onDispatch(Registry::get('Application')->getMvcEvent());
-
-        $userModel->delete();
     }
 
     /**

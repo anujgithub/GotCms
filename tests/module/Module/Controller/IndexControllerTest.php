@@ -133,8 +133,6 @@ class IndexControllerTest extends AbstractHttpControllerTestCase
         $this->assertControllerName('ModuleController');
         $this->assertControllerClass('IndexController');
         $this->assertMatchedRouteName('module/install');
-
-        ModuleModel::fromName('Sitemap')->delete();
     }
 
     /**
@@ -167,16 +165,8 @@ class IndexControllerTest extends AbstractHttpControllerTestCase
      */
     public function testUninstallAction()
     {
-        $moduleModel = ModuleModel::fromArray(
-            array(
-                'name' => 'Sitemap'
-            )
-        );
-
-        $moduleModel->save();
-
         $this->dispatch(
-            '/admin/module/uninstall/' . $moduleModel->getId()
+            '/admin/module/uninstall/1'
         );
         $this->assertResponseStatusCode(200);
 
@@ -184,8 +174,6 @@ class IndexControllerTest extends AbstractHttpControllerTestCase
         $this->assertControllerName('ModuleController');
         $this->assertControllerClass('IndexController');
         $this->assertMatchedRouteName('module/uninstall');
-
-        $moduleModel->delete();
     }
 
     /**
@@ -196,7 +184,7 @@ class IndexControllerTest extends AbstractHttpControllerTestCase
      * @return void
      */
     public function testEditAction()
-    {
+    {/*
         $moduleModel = ModuleModel::fromArray(
             array(
                 'name' => 'Sitemap'
@@ -229,9 +217,9 @@ class IndexControllerTest extends AbstractHttpControllerTestCase
                 )
             );
         $moduleModel->execute($insert);
-
+*/
         $this->dispatch(
-            '/admin/module/' . $moduleModel->getId()
+            '/admin/module/1'
         );
         $this->assertResponseStatusCode(200);
 
