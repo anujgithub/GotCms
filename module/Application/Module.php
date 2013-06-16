@@ -79,7 +79,6 @@ class Module extends Mvc\Module
         $config         = $application->getConfig();
         $serviceManager = $application->getServiceManager();
         if (!Registry::isRegistered('Db') and !empty($config['db'])) {
-
             $dbAdapter = $this->initDatabase($config);
             $this->initSession($serviceManager, $dbAdapter);
             $this->initTranslator($serviceManager);

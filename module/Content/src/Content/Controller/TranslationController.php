@@ -97,8 +97,9 @@ class TranslationController extends Action
                 $this->flashMessenger()->addErrorMessage('Invalid data sent !');
                 $this->useFlashMessenger();
             } else {
-                $source = $post->get('source');
-                $data   = array();
+                $translator = new Translator();
+                $source     = $post->get('source');
+                $data       = array();
                 foreach ($post->get('destination') as $destinationId => $destination) {
                     $data[$destinationId] = array('value' => $destination);
                 }
@@ -112,7 +113,7 @@ class TranslationController extends Action
                 }
 
                 $this->flashMessenger()->addSuccessMessage('Translation saved !');
-                Translator::setValue($source, $data);
+                $translator->setValue($source, $data);
                 return $this->redirect()->toRoute('content/translation/create');
             }
         }
@@ -135,10 +136,12 @@ class TranslationController extends Action
                 return $this->redirect()->toRoute('content/translation');
             }
 
+            $translator = new Translator();
+
             foreach ($post['source'] as $sourceId => $source) {
-                Translator::getInstance()->update(array('source' => $source), sprintf('id = %d', $sourceId));
+                $translator->update(array('source' => $source), sprintf('id = %d', $sourceId));
                 if (!empty($post['destination'][$sourceId])) {
-                    Translator::setValue($sourceId, $post['destination'][$sourceId]);
+                    $translator->setValue($sourceId, $post['destination'][$sourceId]);
                 }
             }
 
@@ -148,7 +151,8 @@ class TranslationController extends Action
             return $this->redirect()->toRoute('content/translation');
         }
 
-        return array('form' => $translationForm, 'values' => Translator::getValues());
+        $translator = new Translator();
+        return array('form' => $translationForm, 'values' => $translator->getValues());
     }
 
     /**
@@ -158,8 +162,9 @@ class TranslationController extends Action
      */
     protected function generateCache()
     {
-        $values = Translator::getValues();
-        $data   = array();
+        $translator = new Translator();
+        $values     = $translator->getValues();
+        $data       = array();
         foreach ($values as $value) {
             if (empty($data[$value['locale']])) {
                 $data[$value['locale']] = array();
