@@ -67,6 +67,9 @@ class IndexController extends AbstractController
             case 'pdo_mysql':
                 $model = new Model\Database\Mysql();
                 break;
+            default:
+                return false;
+                break;
         }
 
         $content  = $model->export($this->getRequest()->getPost()->get('what'));

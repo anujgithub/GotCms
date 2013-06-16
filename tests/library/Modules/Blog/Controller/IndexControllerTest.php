@@ -58,41 +58,6 @@ class IndexControllerTest extends \PHPUnit_Framework_TestCase
     protected $boostrap;
 
     /**
-     * @var Model
-     *
-     * @return void
-     */
-    protected $document;
-
-    /**
-     * @var ViewModel
-     *
-     * @return void
-     */
-    protected $view;
-
-    /**
-     * @var LayoutModel
-     *
-     * @return void
-     */
-    protected $layout;
-
-    /**
-     * @var UserModel
-     *
-     * @return void
-     */
-    protected $user;
-
-    /**
-     * @var DocumentTypeModel
-     *
-     * @return void
-     */
-    protected $documentType;
-
-    /**
      * Sets up the fixture, for example, opens a network connection.
      * This method is called before a test is executed.
      *
@@ -100,67 +65,6 @@ class IndexControllerTest extends \PHPUnit_Framework_TestCase
      */
     protected function setUp()
     {
-        $this->view = ViewModel::fromArray(
-            array(
-                'name' => 'View Name',
-                'identifier' => 'View identifier',
-                'description' => 'View Description',
-                'content' => 'View Content'
-            )
-        );
-        $this->view->save();
-
-        $this->layout = LayoutModel::fromArray(
-            array(
-                'name' => 'Layout Name',
-                'identifier' => 'Layout identifier',
-                'description' => 'Layout Description',
-                'content' => 'Layout Content'
-            )
-        );
-        $this->layout->save();
-
-        $this->user = UserModel::fromArray(
-            array(
-                'lastname' => 'User test',
-                'firstname' => 'User test',
-                'email' => 'pierre.rambaud86@gmail.com',
-                'login' => 'test',
-                'user_acl_role_id' => 1,
-            )
-        );
-
-        $this->user->setPassword('test');
-        $this->user->save();
-
-        $this->documentType = DocumentTypeModel::fromArray(
-            array(
-                'name' => 'Document Type Name',
-                'description' => 'Document Type description',
-                'icon_id' => 1,
-                'defaultview_id' => $this->view->getId(),
-                'user_id' => $this->user->getId(),
-            )
-        );
-
-        $this->documentType->save();
-
-        $this->document = DocumentModel::fromArray(
-            array(
-                'name' => 'Document name',
-                'url_key' => 'url-key',
-                'status' => DocumentModel::STATUS_ENABLE,
-                'show_in_nav' => true,
-                'user_id' => $this->user->getId(),
-                'document_type_id' => $this->documentType->getId(),
-                'view_id' => $this->view->getId(),
-                'layout_id' => $this->layout->getId(),
-                'parent_id' => null
-            )
-        );
-
-        $this->document->save();
-
         $this->boostrap = new Bootstrap();
         $this->boostrap->install();
         $this->object = new IndexController(
@@ -177,18 +81,7 @@ class IndexControllerTest extends \PHPUnit_Framework_TestCase
      */
     protected function tearDown()
     {
-        $this->boostrap->uninstall();
-        $this->document->delete();
-        $this->view->delete();
-        $this->layout->delete();
-        $this->documentType->delete();
-        $this->user->delete();
-        unset($this->document);
         unset($this->object);
-        unset($this->view);
-        unset($this->layout);
-        unset($this->documentType);
-        unset($this->user);
     }
 
     /**

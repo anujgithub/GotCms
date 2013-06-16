@@ -59,12 +59,13 @@ class IndexControllerTest extends \PHPUnit_Framework_TestCase
      */
     protected function setUp()
     {
-        $this->boostrap = new Bootstrap();
+        $this->boostrap = new Bootstrap(array());
         $this->boostrap->install();
         $this->object = new IndexController(
             Registry::get('Application')->getRequest(),
             Registry::get('Application')->getResponse()
         );
+        $this->object->setServiceLocator($this->getMock('Zend\ServiceManager\ServiceManager'));
 
     }
 
