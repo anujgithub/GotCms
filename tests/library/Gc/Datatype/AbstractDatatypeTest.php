@@ -43,13 +43,6 @@ class AbstractDatatypeTest extends \PHPUnit_Framework_TestCase
     protected $object;
 
     /**
-     * @var DatatypeModel
-     *
-     * @return void
-     */
-    protected $datatype;
-
-    /**
      * Sets up the fixture, for example, opens a network connection.
      * This method is called before a test is executed.
      *
@@ -57,8 +50,14 @@ class AbstractDatatypeTest extends \PHPUnit_Framework_TestCase
      */
     protected function setUp()
     {
+        $this->viewHelperManager = $this->getMock('Zend\View\HelperPluginManager', array(), array(), '', false);
+        $this->viewHelperManager->expects($this->any())
+            ->method('get')
+            ->with($this->equalTo('url'))
+            ->will($this->returnValue($this->getMock('Zend\View\Helper\Url', array('__invoke'))));
+
         $this->object = $this->getMockForAbstractClass('Gc\Datatype\AbstractDatatype');
-        $this->object->load($this->getMock('Gc\Datatype\Model'), 1);
+        $this->object->load($this->viewHelperManager, $this->getMock('Gc\Datatype\Model'), 1);
     }
 
     /**
@@ -106,7 +105,7 @@ class AbstractDatatypeTest extends \PHPUnit_Framework_TestCase
      */
     public function testLoadWithEmptyDatatype()
     {
-        $this->assertFalse($this->object->load(null, null));
+        $this->assertFalse($this->object->load($this->viewHelperManager, null, null));
     }
 
     /**
@@ -118,7 +117,13 @@ class AbstractDatatypeTest extends \PHPUnit_Framework_TestCase
      */
     public function testGetConfig()
     {
-        $this->assertEquals('AbstractDatatype', $this->object->getConfig());
+        $datatypeModel = $this->object->getDatatypeModel();
+        $datatypeModel->expects($this->any())
+            ->method('getData')
+            ->with($this->equalTo('prevalue_value'))
+            ->will($this->returnValue('s:4:"test";'));
+
+        $this->assertEquals('test', $this->object->getConfig());
     }
 
     /**
@@ -130,7 +135,11 @@ class AbstractDatatypeTest extends \PHPUnit_Framework_TestCase
      */
     public function testGetConfigWithNotSerializeValue()
     {
-        $this->object->setConfig(array());
+        $datatypeModel = $this->object->getDatatypeModel();
+        $datatypeModel->expects($this->any())
+            ->method('getData')
+            ->with($this->equalTo('prevalue_value'))
+            ->will($this->returnValue(array()));
         $this->assertInternalType('array', $this->object->getConfig());
     }
 
@@ -143,8 +152,7 @@ class AbstractDatatypeTest extends \PHPUnit_Framework_TestCase
      */
     public function testSetConfig()
     {
-        $this->object->setConfig(serialize('NewValue'));
-        $this->assertEquals('NewValue', $this->object->getConfig());
+        $this->assertInstanceOf('Gc\Datatype\AbstractDatatype', $this->object->setConfig(serialize('NewValue')));
     }
 
     /**
@@ -156,7 +164,7 @@ class AbstractDatatypeTest extends \PHPUnit_Framework_TestCase
      */
     public function testGetUploadUrl()
     {
-        $this->assertEquals('/admin/content/media/upload/document/1/property/1', $this->object->getUploadUrl(1));
+        $this->assertNUll($this->object->getUploadUrl(1));
     }
 
     /**
@@ -168,7 +176,7 @@ class AbstractDatatypeTest extends \PHPUnit_Framework_TestCase
      */
     public function testGetHelper()
     {
-        $this->assertInstanceOf('Gc\View\Helper\Partial', $this->object->getHelper('partial'));
+        $this->assertInstanceOf('Zend\View\Helper\Url', $this->object->getHelper('url'));
     }
 
     /**

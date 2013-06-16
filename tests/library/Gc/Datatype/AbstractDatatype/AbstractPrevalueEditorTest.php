@@ -53,7 +53,8 @@ class AbstractPrevalueEditorTest extends \PHPUnit_Framework_TestCase
     protected function setUp()
     {
         $mockDatatype = $this->getMockForAbstractClass('Gc\Datatype\AbstractDatatype');
-        $mockDatatype->load($this->getMock('Gc\Datatype\Model'), 1);
+        $viewHelperManager = $this->getMock('Zend\View\HelperPluginManager', array(), array(), '', false);
+        $mockDatatype->load($viewHelperManager, $this->getMock('Gc\Datatype\Model'), 1);
 
         $this->object = $this->getMockForAbstractClass(
             'Gc\Datatype\AbstractDatatype\AbstractPrevalueEditor',
@@ -81,7 +82,7 @@ class AbstractPrevalueEditorTest extends \PHPUnit_Framework_TestCase
      */
     public function testGetConfig()
     {
-        $this->assertEquals('AbstractPrevalueEditorTest', $this->object->getConfig());
+        $this->assertNull($this->object->getConfig());
     }
 
     /**
@@ -93,8 +94,7 @@ class AbstractPrevalueEditorTest extends \PHPUnit_Framework_TestCase
      */
     public function testSetConfig()
     {
-        $this->object->setConfig('s:27:"AbstractPrevalueEditorTest2";');
-        $this->assertEquals('AbstractPrevalueEditorTest2', $this->object->getConfig());
+        $this->assertInstanceOf('Gc\Datatype\AbstractDatatype\AbstractPrevalueEditor', $this->object->setConfig('data'));
     }
 
     /**
@@ -155,6 +155,6 @@ class AbstractPrevalueEditorTest extends \PHPUnit_Framework_TestCase
      */
     public function testGetHelper()
     {
-        $this->assertInstanceOf('Gc\View\Helper\Partial', $this->object->getHelper('partial'));
+        $this->assertNull($this->object->getHelper('partial'));
     }
 }

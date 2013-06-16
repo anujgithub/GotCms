@@ -52,9 +52,20 @@ class AbstractEditorTest extends \PHPUnit_Framework_TestCase
      */
     protected function setUp()
     {
-        $mockDatatype = $this->getMockForAbstractClass('Gc\Datatype\AbstractDatatype');
-        $mockDatatype->setProperty($this->getMock('Gc\Property\Model'));
-        $mockDatatype->load($this->getMock('Gc\Datatype\Model'), 1);
+        $property = $this->getMock('Gc\Property\Model', array('getId'));
+        $property->expects($this->any())
+            ->method('getId')
+            ->will($this->returnValue(1));
+
+        $viewHelperManager = $this->getMock('Zend\View\HelperPluginManager', array(), array(), '', false);
+        $viewHelperManager->expects($this->any())
+            ->method('get')
+            ->with($this->equalTo('url'))
+            ->will($this->returnValue($this->getMock('Zend\View\Helper\Url', array('__invoke'))));
+
+        $mockDatatype = $this->getMockForAbstractClass('Gc\Datatype\AbstractDatatype', array('getUploadUrl'));
+        $mockDatatype->setProperty($property);
+        $mockDatatype->load($viewHelperManager, $this->getMock('Gc\Datatype\Model'), 1);
 
         $this->object = $this->getMockForAbstractClass(
             'Gc\Datatype\AbstractDatatype\AbstractEditor',
@@ -82,8 +93,7 @@ class AbstractEditorTest extends \PHPUnit_Framework_TestCase
      */
     public function testGetValue()
     {
-        $this->object->setValue('test');
-        $this->assertEquals('test', $this->object->getValue());
+        $this->assertNull($this->object->getValue());
     }
 
     /**
@@ -95,8 +105,7 @@ class AbstractEditorTest extends \PHPUnit_Framework_TestCase
      */
     public function testSetValue()
     {
-        $this->object->setValue('test');
-        $this->assertEquals('test', $this->object->getValue());
+        $this->assertInstanceOf('Gc\Datatype\AbstractDatatype\AbstractEditor', $this->object->setValue('test'));
     }
 
     /**
@@ -108,7 +117,7 @@ class AbstractEditorTest extends \PHPUnit_Framework_TestCase
      */
     public function testGetConfig()
     {
-        $this->assertEquals('AbstractEditorTest', $this->object->getConfig());
+        $this->assertNull($this->object->getConfig());
     }
 
     /**
@@ -120,8 +129,8 @@ class AbstractEditorTest extends \PHPUnit_Framework_TestCase
      */
     public function testSetConfig()
     {
-        $this->object->setConfig('s:19:"AbstractEditorTest2";');
-        $this->assertEquals('AbstractEditorTest2', $this->object->getConfig());
+        $result = $this->object->setConfig('s:19:"AbstractEditorTest2";');
+        $this->assertInstanceOf('Gc\Datatype\AbstractDatatype\AbstractEditor', $result);
     }
 
     /**
@@ -133,10 +142,7 @@ class AbstractEditorTest extends \PHPUnit_Framework_TestCase
      */
     public function testGetUploadUrl()
     {
-        $this->assertEquals(
-            '/admin/content/media/upload/document/1/property/' . $this->property->getId(),
-            $this->object->getUploadUrl()
-        );
+        $this->assertNull($this->object->getUploadUrl());
     }
 
     /**
@@ -148,7 +154,7 @@ class AbstractEditorTest extends \PHPUnit_Framework_TestCase
      */
     public function testGetName()
     {
-        $this->assertEquals('datatype' . $this->property->getId(), $this->object->getName());
+        $this->assertEquals('datatype1', $this->object->getName());
     }
 
     /**
@@ -221,6 +227,6 @@ class AbstractEditorTest extends \PHPUnit_Framework_TestCase
      */
     public function testGetHelper()
     {
-        $this->assertInstanceOf('Gc\View\Helper\Partial', $this->object->getHelper('partial'));
+        $this->assertInstanceOf('Zend\View\Helper\Url', $this->object->getHelper('url'));
     }
 }
